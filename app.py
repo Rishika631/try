@@ -21,7 +21,7 @@ def main():
     uploaded_file = st.file_uploader("Upload Image", type=['jpg', 'jpeg', 'png'])
 
     st.subheader("Select a Sample Image:")
-     for index, image_url in enumerate(sample_images):
+    for index, image_url in enumerate(sample_images):
         col = st.columns(2)
         with col[0]:
             image = st.image(image_url, use_column_width=True)
