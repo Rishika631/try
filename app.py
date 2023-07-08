@@ -1,11 +1,17 @@
 import streamlit as st
 import requests
+from PIL import Image
+import io
 
 API_URL = "https://api-inference.huggingface.co/models/to-be/donut-base-finetuned-invoices"
 headers = {"Authorization": "Bearer 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"}
 
-def query(file):
-    response = requests.post(API_URL, headers=headers, files={"file": file})
+def query(image):
+    img_byte_arr = io.BytesIO()
+    image.save(img_byte_arr, format='JPEG')
+    img_byte_arr = img_byte_arr.getvalue()
+
+    response = requests.post(API_URL, headers=headers, files={"file": img_byte_arr})
     return response.text
 
 def main():
@@ -24,17 +30,16 @@ def main():
     for index, image_path in enumerate(sample_images):
         col = st.columns(2)
         with col[0]:
-            image = st.image(image_path, use_column_width=True)
+            image = Image.open(image_path)
+            st.image(image, use_column_width=True)
             if st.button(f"Use Image {index+1}", key=f"use_image_{index}"):
-                with open(image_path, "rb") as f:
-                    file_content = f.read()
-                output = query(file_content)
+                output = query(image)
                 st.write("Extracted Text:")
                 st.write(output)
 
     if uploaded_file is not None:
-        file_content = uploaded_file.read()
-        output = query(file_content)
+        image = Image.open(uploaded_file)
+        output = query(image)
         st.write("Extracted Text:")
         st.write(output)
 
