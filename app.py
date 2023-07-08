@@ -41,9 +41,11 @@ def main():
         uploaded_image = Image.open(io.BytesIO(uploaded_file.read()))
         st.image(uploaded_image, use_column_width=True)
         if st.button("Use Uploaded Image"):
-            output = query(uploaded_image)
+            output = query(uploaded_file.read())
             st.write("Extracted Text:")
             st.write(output)
 
 if __name__ == "__main__":
     main()
+
+
