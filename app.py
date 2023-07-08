@@ -28,8 +28,7 @@ def main():
         st.write("Extracted Text:")
         st.write(output)
 
-    st.sidebar.title("Select Sample Image")
-    selected_image = st.sidebar.selectbox("Sample Images", sample_images)
+    selected_image = st.sidebar.selectbox("Select Sample Image", sample_images)
     selected_index = sample_images.index(selected_image)
 
     st.subheader("Select a Sample Image:")
@@ -45,7 +44,7 @@ def main():
 
         images_col[index].image(image, use_column_width=True)
 
-        if index == selected_index:
+        if st.button(f"Use Image {index+1}", key=f"use_image_{index+1}"):
             with open(image_path, "rb") as f:
                 image_bytes = f.read()
             output = query(image_bytes)
