@@ -38,10 +38,12 @@ def main():
                 st.write(output)
 
     if uploaded_file is not None:
-        image = Image.open(uploaded_file)
-        output = query(image)
-        st.write("Extracted Text:")
-        st.write(output)
+        uploaded_image = Image.open(io.BytesIO(uploaded_file.read()))
+        st.image(uploaded_image, use_column_width=True)
+        if st.button("Use Uploaded Image"):
+            output = query(uploaded_image)
+            st.write("Extracted Text:")
+            st.write(output)
 
 if __name__ == "__main__":
     main()
