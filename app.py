@@ -25,7 +25,7 @@ def main():
         col = st.columns(2)
         with col[0]:
             image = st.image(image_url, use_column_width=True)
-            if image.button("Use this Image"):
+            if st.button("Use this Image"):
                 output = query(requests.get(image_url).content)
                 st.write("Extracted Text:")
                 st.write(output)
