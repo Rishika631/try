@@ -8,7 +8,7 @@ headers = {"Authorization": "Bearer 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"}
 
 def query(image):
     image_byte_arr = io.BytesIO()
-    image.save(image_byte_arr, format='JPEG')
+    image.save(image_byte_arr, format=['JPG', 'JPEG', 'PNG'])
     image_byte_arr.seek(0)
 
     response = requests.post(API_URL, headers=headers, files={"file": image_byte_arr})
