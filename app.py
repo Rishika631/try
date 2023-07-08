@@ -22,7 +22,7 @@ def main():
 
     st.subheader("Select a Sample Image:")
     for image_url in sample_images:
-        col = st.beta_columns(2)
+        col = st.columns(2)
         with col[0]:
             image = st.image(image_url, use_column_width=True)
             if image.button("Use this Image"):
