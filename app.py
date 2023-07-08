@@ -30,12 +30,12 @@ def main():
             st.image(image, use_column_width=True)
             if st.button(f"Use Image {index+1}", key=f"use_image_{index}"):
                 with open(image_path, "rb") as f:
-                    output = query(f)
+                    output = query(f.read())  # Read the file contents
                 st.write("Extracted Text:")
                 st.write(output)
 
     if uploaded_file is not None:
-        output = query(uploaded_file)
+        output = query(uploaded_file.read())  # Read the file contents
         st.write("Extracted Text:")
         st.write(output)
 
