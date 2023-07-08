@@ -6,8 +6,8 @@ import io
 API_URL = "https://api-inference.huggingface.co/models/to-be/donut-base-finetuned-invoices"
 headers = {"Authorization": "Bearer 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"}
 
-def query(file):
-    response = requests.post(API_URL, headers=headers, data=file)
+def query(image):
+    response = requests.post(API_URL, headers=headers, files={"file": image})
     return response.text
 
 def main():
@@ -29,17 +29,15 @@ def main():
             image = Image.open(image_path)
             st.image(image, use_column_width=True)
             if st.button(f"Use Image {index+1}", key=f"use_image_{index}"):
-                output = query(image.read())
+                with open(image_path, "rb") as f:
+                    output = query(f)
                 st.write("Extracted Text:")
                 st.write(output)
 
     if uploaded_file is not None:
-        uploaded_image = Image.open(io.BytesIO(uploaded_file.read()))
-        st.image(uploaded_image, use_column_width=True)
-        if st.button("Use Uploaded Image"):
-            output = query(uploaded_image.read())
-            st.write("Extracted Text:")
-            st.write(output)
+        output = query(uploaded_file)
+        st.write("Extracted Text:")
+        st.write(output)
 
 if __name__ == "__main__":
     main()
