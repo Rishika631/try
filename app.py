@@ -28,6 +28,9 @@ def main():
         st.write("Extracted Text:")
         st.write(output)
 
+    selected_image = st.sidebar.selectbox("Select Sample Image", sample_images)
+    selected_index = sample_images.index(selected_image)
+
     st.subheader("Select a Sample Image:")
 
     row_images = []
@@ -44,22 +47,22 @@ def main():
 
             buttons_col1, buttons_col2, buttons_col3 = st.columns(3)
 
-            if buttons_col1.button(f"Use Image {index-1}", key=f"use_image_{index-1}"):
-                with open(sample_images[index-1], "rb") as f:
+            if buttons_col1.button(f"Use Image {selected_index-1}", key=f"use_image_{selected_index-1}"):
+                with open(sample_images[selected_index-1], "rb") as f:
                     image_bytes = f.read()
                 output = query(image_bytes)
                 st.write("Extracted Text:")
                 st.write(output)
 
-            if buttons_col2.button(f"Use Image {index}", key=f"use_image_{index}"):
-                with open(sample_images[index], "rb") as f:
+            if buttons_col2.button(f"Use Image {selected_index}", key=f"use_image_{selected_index}"):
+                with open(sample_images[selected_index], "rb") as f:
                     image_bytes = f.read()
                 output = query(image_bytes)
                 st.write("Extracted Text:")
                 st.write(output)
 
-            if buttons_col3.button(f"Use Image {index+1}", key=f"use_image_{index+1}"):
-                with open(sample_images[index+1], "rb") as f:
+            if buttons_col3.button(f"Use Image {selected_index+1}", key=f"use_image_{selected_index+1}"):
+                with open(sample_images[selected_index+1], "rb") as f:
                     image_bytes = f.read()
                 output = query(image_bytes)
                 st.write("Extracted Text:")
