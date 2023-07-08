@@ -5,7 +5,7 @@ API_URL = "https://api-inference.huggingface.co/models/to-be/donut-base-finetune
 headers = {"Authorization": "Bearer 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"}
 
 def query(file):
-    response = requests.post(API_URL, headers=headers, data=file)
+    response = requests.post(API_URL, headers=headers, files={"file": file})
     return response.text
 
 def main():
@@ -21,17 +21,18 @@ def main():
     uploaded_file = st.file_uploader("Upload Image", type=['jpg', 'jpeg', 'png'])
 
     st.subheader("Select a Sample Image:")
-    for index, image_url in enumerate(sample_images):
+    for index, image_path in enumerate(sample_images):
         col = st.columns(2)
         with col[0]:
-            image = st.image(image_url, use_column_width=True)
+            image = st.image(image_path, use_column_width=True)
             if st.button(f"Use Image {index+1}", key=f"use_image_{index}"):
-                output = query(requests.get(image_url).content)
+                with open(image_path, "rb") as f:
+                    output = query(f)
                 st.write("Extracted Text:")
                 st.write(output)
 
     if uploaded_file is not None:
-        output = query(uploaded_file.read())
+        output = query(uploaded_file)
         st.write("Extracted Text:")
         st.write(output)
 
