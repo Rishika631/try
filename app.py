@@ -28,65 +28,29 @@ def main():
         st.write("Extracted Text:")
         st.write(output)
 
-    selected_image = st.sidebar.selectbox("Select Sample Image", sample_images)
+    st.sidebar.title("Select Sample Image")
+    selected_image = st.sidebar.selectbox("Sample Images", sample_images)
     selected_index = sample_images.index(selected_image)
 
     st.subheader("Select a Sample Image:")
 
-    row_images = []
+    images_col = st.columns(3)
+
     for index, image_path in enumerate(sample_images):
         image = Image.open(image_path)
-        row_images.append(image)
 
-        if len(row_images) == 3:
-            st.image(row_images, use_column_width=True)
+        # Resize the image to fit within a column
+        max_image_width = int(st.columns(3)[0].width / 3)
+        image.thumbnail((max_image_width, max_image_width))
 
-            # Add padding between images using st.sidebar container
-            with st.sidebar:
-                st.text("")  # Add empty text to create space
+        images_col[index].image(image, use_column_width=True)
 
-            buttons_col1, buttons_col2, buttons_col3 = st.columns(3)
-
-            if buttons_col1.button(f"Use Image {selected_index-1}", key=f"use_image_{selected_index-1}"):
-                with open(sample_images[selected_index-1], "rb") as f:
-                    image_bytes = f.read()
-                output = query(image_bytes)
-                st.write("Extracted Text:")
-                st.write(output)
-
-            if buttons_col2.button(f"Use Image {selected_index}", key=f"use_image_{selected_index}"):
-                with open(sample_images[selected_index], "rb") as f:
-                    image_bytes = f.read()
-                output = query(image_bytes)
-                st.write("Extracted Text:")
-                st.write(output)
-
-            if buttons_col3.button(f"Use Image {selected_index+1}", key=f"use_image_{selected_index+1}"):
-                with open(sample_images[selected_index+1], "rb") as f:
-                    image_bytes = f.read()
-                output = query(image_bytes)
-                st.write("Extracted Text:")
-                st.write(output)
-
-            row_images = []
-
-    # If there are remaining images not displayed in a row
-    if row_images:
-        st.image(row_images, use_column_width=True)
-
-        # Add padding between images using st.sidebar container
-        with st.sidebar:
-            st.text("")  # Add empty text to create space
-
-        buttons_col = st.columns(len(row_images))
-
-        for index, image_path in enumerate(sample_images[-len(row_images):]):
-            if buttons_col[index].button(f"Use Image {index+1}", key=f"use_image_{index+1}"):
-                with open(image_path, "rb") as f:
-                    image_bytes = f.read()
-                output = query(image_bytes)
-                st.write("Extracted Text:")
-                st.write(output)
+        if index == selected_index:
+            with open(image_path, "rb") as f:
+                image_bytes = f.read()
+            output = query(image_bytes)
+            st.write("Extracted Text:")
+            st.write(output)
 
 if __name__ == "__main__":
     main()
