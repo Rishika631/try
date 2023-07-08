@@ -1,18 +1,17 @@
 import streamlit as st
 import requests
 from PIL import Image
-import io
 
 API_URL = "https://api-inference.huggingface.co/models/to-be/donut-base-finetuned-invoices"
 headers = {"Authorization": "Bearer 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"}
 
 def query(image):
-    img_byte_arr = io.BytesIO()
-    image.save(img_byte_arr, format='JPEG')
-    img_byte_arr = img_byte_arr.getvalue()
+    img_byte_arr = image.convert('RGB')
+    img_byte_arr.save("temp.jpg", format='JPEG')
 
-    response = requests.post(API_URL, headers=headers, files={"file": img_byte_arr})
-    return response.text
+    with open("temp.jpg", "rb") as f:
+        response = requests.post(API_URL, headers=headers, files={"file": f})
+        return response.text
 
 def main():
     st.title("Documented Form Text Extraction")
@@ -38,14 +37,12 @@ def main():
                 st.write(output)
 
     if uploaded_file is not None:
-        #uploaded_image = Image.open(io.BytesIO(uploaded_file.read()))
-        #st.image(uploaded_image, use_column_width=True)
-        #if st.button("Use Uploaded Image"):
-        output = query(uploaded_file.read())
-        st.write("Extracted Text:")
-        st.write(output)
+        uploaded_image = Image.open(uploaded_file)
+        st.image(uploaded_image, use_column_width=True)
+        if st.button("Use Uploaded Image"):
+            output = query(uploaded_image)
+            st.write("Extracted Text:")
+            st.write(output)
 
 if __name__ == "__main__":
     main()
-
-
