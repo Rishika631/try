@@ -29,19 +29,29 @@ def main():
         st.write(output)
 
     st.subheader("Select a Sample Image:")
-    for index, image_path in enumerate(sample_images):
-        col = st.columns(2)
-        with col[0]:
-            image = Image.open(image_path)
-            st.image(image, use_column_width=True)
-            if st.button(f"Use Image {index+1}", key=f"use_image_{index}"):
-                with open(image_path, "rb") as f:
-                    image_bytes = f.read()
-                output = query(image_bytes)
-                st.write("Extracted Text:")
-                st.write(output)
 
-    
+    for index, image_path in enumerate(sample_images):
+        if index % 2 == 0:
+            col1, col2 = st.columns(2)
+            with col1:
+                image1 = Image.open(image_path)
+                st.image(image1, use_column_width=True)
+                if st.button(f"Use Image {index+1}", key=f"use_image_{index}"):
+                    with open(image_path, "rb") as f:
+                        image_bytes = f.read()
+                    output = query(image_bytes)
+                    st.write("Extracted Text:")
+                    st.write(output)
+        else:
+            with col2:
+                image2 = Image.open(image_path)
+                st.image(image2, use_column_width=True)
+                if st.button(f"Use Image {index+1}", key=f"use_image_{index}"):
+                    with open(image_path, "rb") as f:
+                        image_bytes = f.read()
+                    output = query(image_bytes)
+                    st.write("Extracted Text:")
+                    st.write(output)
 
 if __name__ == "__main__":
     main()
