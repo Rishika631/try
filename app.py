@@ -7,11 +7,11 @@ API_URL = "https://api-inference.huggingface.co/models/to-be/donut-base-finetune
 headers = {"Authorization": "Bearer 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"}
 
 def query(image):
-    img_byte_arr = io.BytesIO()
-    image.save(img_byte_arr, format='JPEG')
-    img_byte_arr.seek(0)
+    image_byte_arr = io.BytesIO()
+    image.save(image_byte_arr, format='JPEG')
+    image_byte_arr.seek(0)
 
-    response = requests.post(API_URL, headers=headers, files={"file": img_byte_arr})
+    response = requests.post(API_URL, headers=headers, files={"file": image_byte_arr})
     return response.text
 
 def main():
@@ -38,7 +38,7 @@ def main():
                 st.write(output)
 
     if uploaded_file is not None:
-        uploaded_image = Image.open(uploaded_file)
+        uploaded_image = Image.open(io.BytesIO(uploaded_file.read()))
         st.image(uploaded_image, use_column_width=True)
         if st.button("Use Uploaded Image"):
             output = query(uploaded_image)
