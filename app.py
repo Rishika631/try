@@ -21,11 +21,11 @@ def main():
     uploaded_file = st.file_uploader("Upload Image", type=['jpg', 'jpeg', 'png'])
 
     st.subheader("Select a Sample Image:")
-    for image_url in sample_images:
+     for index, image_url in enumerate(sample_images):
         col = st.columns(2)
         with col[0]:
             image = st.image(image_url, use_column_width=True)
-            if st.button("Use this Image"):
+            if st.button(f"Use Image {index+1}", key=f"use_image_{index}"):
                 output = query(requests.get(image_url).content)
                 st.write("Extracted Text:")
                 st.write(output)
