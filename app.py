@@ -23,26 +23,25 @@ def main():
     uploaded_file = st.file_uploader("Upload Image", type=['jpg', 'jpeg', 'png'])
 
     if uploaded_file is not None:
-        image = Image.open(uploaded_file)
-        st.image(image, use_column_width=True)
-        if st.button("Extract Text"):
-            image_bytes = uploaded_file.read()
-            output = query(image_bytes)
-            st.write("Extracted Text:")
-            st.write(output)
+        image_bytes = uploaded_file.read()
+        output = query(image_bytes)
+        st.write("Extracted Text:")
+        st.write(output)
 
     st.subheader("Select a Sample Image:")
     for index, image_path in enumerate(sample_images):
         col = st.columns(2)
         with col[0]:
-            sample_image = Image.open(image_path)
-            st.image(sample_image, use_column_width=True)
-            if st.button(f"Use Sample Image {index+1}"):
+            image = Image.open(image_path)
+            st.image(image, use_column_width=True)
+            if st.button(f"Use Image {index+1}", key=f"use_image_{index}"):
                 with open(image_path, "rb") as f:
                     image_bytes = f.read()
                 output = query(image_bytes)
                 st.write("Extracted Text:")
                 st.write(output)
+
+    
 
 if __name__ == "__main__":
     main()
