@@ -13,31 +13,29 @@ openai.api_key = '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'
 
 # Set Streamlit page configuration
 st.set_page_config(page_title="YouTube Video Summarizer and Insights")
+
+# Function to extract transcript from YouTube video
 def extract_transcript(youtube_video):
-    video_id = parse_qs(urlparse(youtube_video).query).get('v')
-    if video_id:
-        video_id = video_id[0]
-        transcript = YouTubeTranscriptApi.get_transcript(video_id)
+    video_id = youtube_video.split("=")[1]
+    transcript = YouTubeTranscriptApi.get_transcript(video_id)
 
-        transcript_text = ""
-        for segment in transcript:
-            transcript_text += segment['text'] + " "
+    transcript_text = ""
+    for segment in transcript:
+        transcript_text += segment['text'] + " "
 
-        # Extract speakers using named entity recognition
-        nlp = spacy.load("en_core_web_sm")
-        doc = nlp(transcript_text)
-        speakers = []
-        current_speaker = None
+    # Extract speakers using named entity recognition
+    nlp = spacy.load("en_core_web_sm")
+    doc = nlp(transcript_text)
+    speakers = []
+    current_speaker = None
 
-        for token in doc:
-            if token.ent_type_ == "PERSON":
-                if current_speaker is None or token.text != current_speaker:
-                    current_speaker = token.text
-                    speakers.append(current_speaker)
+    for token in doc:
+        if token.ent_type_ == "PERSON":
+            if current_speaker is None or token.text != current_speaker:
+                current_speaker = token.text
+                speakers.append(current_speaker)
 
-        return transcript_text, speakers
-    else:
-        return "", []
+    return transcript_text, speakers
 
 
 
