@@ -1,9 +1,11 @@
 import spacy
+import re
 import streamlit as st
 import openai
 from youtube_transcript_api import YouTubeTranscriptApi
 import moviepy.editor as mp
 import os
+from transformers import pipeline
 
 # Set OpenAI API credentials
 openai.api_key = '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'
@@ -83,6 +85,24 @@ def extract_action_insights(transcript):
     
     return insights
 
+def analyze_sentiment(transcript):
+    sentiment_analyzer = pipeline("sentiment-analysis")
+    results = sentiment_analyzer(transcript)
+
+    sentiments = [result["label"] for result in results]
+    return sentiments
+
+def extract_discussion(transcript, key_point):
+    sentences = re.split(r'(?<=[.!?])\s+', transcript)  # Split transcript into sentences
+
+    related_sentences = []
+    for sentence in sentences:
+        if key_point.lower() in sentence.lower():
+            related_sentences.append(sentence)
+
+    return ' '.join(related_sentences)
+
+
 # Function to perform chatbot interaction
 def chatbot_interaction(transcript, question):
     # Use LangChain API or any other OpenAI model API for chatbot
@@ -123,7 +143,7 @@ def main():
             st.info("Transcript processed successfully!")
 
             # Display options
-            options = st.sidebar.multiselect("Select Options:", ["Summarization", "Key Points", "Action Insights", "Chatbot"])
+            options = st.sidebar.multiselect("Select Options:", ["Summarization", "Key Points", "Action Insights", "Sentiment Analysis", "Minutes of Meeting", "Chatbot"])
 
             # Summarization
             if "Summarization" in options:
@@ -145,6 +165,17 @@ def main():
                 for insight in insights:
                     st.write(insight)
 
+            if "Sentiment Analysis" in options:
+                st.subheader("Sentiment Analysis")
+                sentiment_results = analyze_sentiment(transcript)
+                for idx, sentiment in enumerate(sentiment_results):
+                    st.write(f"Sentiment {idx+1}: {sentiment}")
+
+            if "Minutes of Meeting" in options:
+                st.subheader("Minutes of Meeting")
+                mom = generate_minutes_of_meeting(transcript, key_points)
+                st.text(mom)
+            
             # Chatbot
             if "Chatbot" in options:
                 st.subheader("Chatbot")
