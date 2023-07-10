@@ -5,7 +5,7 @@ from openpyxl import Workbook
 import requests
 import json
 import barcode
-from barcode.writer import ImageWriter
+
 
 API_TOKEN = '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'  # Replace with your Hugging Face OCR API token
 
@@ -43,8 +43,11 @@ def extract_data(image):
 
 def generate_barcode(item):
     # Generate a barcode image for the given item using pyBarcode
-    barcode_image = barcode.get_barcode_class('code39')(str(item), writer=ImageWriter()).save(f'{item}.png')
-    return barcode_image
+    barcode_image = barcode.get('code39', str(item), writer=ImageWriter()).render(writer_options={'module_width': 0.2, 'module_height': 15})
+    with open(f'{item}.png', 'wb') as f:
+        f.write(barcode_image)
+    return f'{item}.png'
+
 
 def save_to_excel(data):
     wb = Workbook()
