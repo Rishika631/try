@@ -60,14 +60,17 @@ def extract_action_insights(transcript):
     insights = []
 
     # Generate action insights using OpenAI's GPT-3.5 model
-    response = openai.Answer.create(
-        search_model="gpt-3.5-turbo",
-        model="gpt-3.5-turbo",
-        question="What actions were mentioned in the transcript?",
-        documents=transcript,
-        examples_context="Extract action insights from the transcript.",
+    response = openai.Completion.create(
+        engine="text-davinci-003",
+        prompt=transcript,
         max_tokens=100,
+        n = 5,
         stop=None,
+        temperature=0.3,
+        top_p=1.0,
+        frequency_penalty=0.0,
+        presence_penalty=0.0,
+        model="davinci",
         log_level="info"
     )
     answer = response.choices[0].text.strip()
