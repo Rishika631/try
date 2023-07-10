@@ -73,7 +73,8 @@ def save_to_excel(data):
         sheet.cell(row=row, column=2).value = price
 
     # Save the Excel file
-    wb.save(filename='invoice_data.xlsx')
+    wb.save(filename='invoice_data.xlsx', file_format='xlsx')
+
 
 
 
