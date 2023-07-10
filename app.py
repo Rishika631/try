@@ -5,6 +5,7 @@ from openpyxl import Workbook
 import requests
 import json
 import barcode
+import numpy as np
 
 
 API_TOKEN = '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'  # Replace with your Hugging Face OCR API token
@@ -19,11 +20,14 @@ def extract_data(image):
     # Convert the image to base64
     image_base64 = image.tobytes()
 
+    # Convert the image_base64 to a list
+    image_base64_list = image_base64.tolist()
+
     # Prepare the API request payload
     payload = {
         "inputs": {
             "image": {
-                "base64": image_base64
+                "base64": image_base64_list
             }
         }
     }
