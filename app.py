@@ -6,7 +6,7 @@ import moviepy.editor as mp
 import os
 
 # Set OpenAI API credentials
-openai.api_key = 'OPENAI_API_KEY'
+openai.api_key = OPENAI_API_KEY
 
 # Set Streamlit page configuration
 st.set_page_config(page_title="YouTube Video Summarizer and Insights")
