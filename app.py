@@ -42,10 +42,11 @@ def extract_data(image):
 
     # Extract the OCR results
     extracted_data = []
-    for result in response_json['predictions']:
-        item = result['label']
-        price = result['score']
-        extracted_data.append((item, price))
+    if 'predictions' in response_json:
+        for result in response_json['predictions']:
+            item = result['label']
+            price = result['score']
+            extracted_data.append((item, price))
 
     return extracted_data
 
