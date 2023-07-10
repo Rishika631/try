@@ -4,8 +4,10 @@ from youtube_transcript_api import YouTubeTranscriptApi
 import moviepy.editor as mp
 import os
 
+
 # Set Streamlit page configuration
 st.set_page_config(page_title="YouTube Video Summarizer and Insights")
+
 
 # Function to extract transcript from YouTube video
 def extract_transcript(youtube_video):
@@ -17,6 +19,7 @@ def extract_transcript(youtube_video):
         transcript_text += segment['text'] + " "
 
     return transcript_text
+
 
 # Function to summarize transcript
 def summarize_transcript(transcript):
@@ -35,6 +38,7 @@ def summarize_transcript(transcript):
 
     return summarized_text
 
+
 # Function to extract key points from the video using moviepy
 def extract_key_points(video_path):
     clip = mp.VideoFileClip(video_path)
@@ -51,6 +55,7 @@ def extract_key_points(video_path):
 
     return key_frames, key_points
 
+
 # Function to extract action insights from transcript
 def extract_action_insights(transcript):
     # Placeholder logic - Extract sentences containing action-oriented keywords
@@ -59,15 +64,16 @@ def extract_action_insights(transcript):
 
     # Split transcript into sentences
     sentences = transcript.split(".")
-    
+
     for sentence in sentences:
         sentence = sentence.strip()
         for keyword in keywords:
             if keyword in sentence:
                 insights.append(sentence)
                 break
-    
+
     return insights
+
 
 # Function to perform chatbot interaction
 def chatbot_interaction(transcript, question):
@@ -82,7 +88,6 @@ def chatbot_interaction(transcript, question):
             break
 
     return response
-
 
 
 # Streamlit app
@@ -193,6 +198,7 @@ def main():
 
             # Delete the uploaded video file
             os.remove(video_path)
+
 
 if __name__ == "__main__":
     main()
