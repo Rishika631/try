@@ -1,4 +1,4 @@
-
+import spacy
 import streamlit as st
 import openai
 from youtube_transcript_api import YouTubeTranscriptApi
