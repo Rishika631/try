@@ -83,12 +83,12 @@ def analyze_sentiment(transcript):
     sentiments = [result["label"] for result in results]
     return sentiments
 
-def generate_minutes_of_meeting(transcript, insights):
+def generate_minutes_of_meeting(transcript, insight):
     sentences = re.split(r'(?<=[.!?])\s+', transcript)  # Split transcript into sentences
 
     related_sentences = []
     for sentence in sentences:
-        if insights.lower() in sentence.lower():
+        if insight.lower() in sentence.lower():
             related_sentences.append(sentence)
 
     return ' '.join(related_sentences)
