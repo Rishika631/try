@@ -1,8 +1,8 @@
-import cv2
 import streamlit as st
-import numpy as np
-import pafy
+import requests
+from pytube import YouTube
 from PIL import Image
+import moviepy.editor as mp
 
 # Streamlit app
 def main():
@@ -25,32 +25,29 @@ def main():
         else:
             st.warning("Please enter a YouTube video link")
 
-# Extract key frames from the video using OpenCV
+# Extract key frames from the video using moviepy
 def extract_key_frames(youtube_link):
-    video = pafy.new(youtube_link)
-    best = video.getbest(preftype="mp4")
-    cap = cv2.VideoCapture(best.url)
-
+    yt = YouTube(youtube_link)
+    video = yt.streams.get_highest_resolution()
+    video_path = video.download()
+    clip = mp.VideoFileClip(video_path)
+    duration = clip.duration
+    interval = duration / 10  # Extract 10 key frames evenly across the video
     key_frames = []
-    frame_count = 0
-    while cap.isOpened():
-        ret, frame = cap.read()
-        if not ret:
-            break
-        if frame_count % 60 == 0:  # Change key frame interval as desired
-            key_frames.append(frame)
-        frame_count += 1
+    for i in range(10):
+        time = interval * i
+        frame = clip.get_frame(time)
+        key_frames.append(frame)
 
-    cap.release()
     return key_frames
 
 # Display the key frames as an image summary
 def display_summary(key_frames):
     st.subheader("Video Image Summary")
     if key_frames:
-        for key_frame in key_frames:
+        for idx, key_frame in enumerate(key_frames):
             image = Image.fromarray(key_frame)
-            st.image(image, caption="Key Frame")
+            st.image(image, caption=f"Key Frame {idx+1}")
     else:
         st.warning("No key frames found in the video")
 
