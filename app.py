@@ -6,6 +6,8 @@ import requests
 import json
 import barcode
 import numpy as np
+import base64
+from io import BytesIO
 
 
 API_TOKEN = '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'  # Replace with your Hugging Face OCR API token
@@ -17,8 +19,13 @@ def extract_data(image):
         'Content-Type': 'application/json'
     }
 
-    # Convert the image to base64
-    image_base64 = base64.b64encode(image).decode('utf-8')
+    # Convert the image to bytes
+    image_byte_array = BytesIO()
+    image.save(image_byte_array, format='PNG')
+    image_byte_array = image_byte_array.getvalue()
+
+    # Convert the image bytes to base64
+    image_base64 = base64.b64encode(image_byte_array).decode('utf-8')
 
     # Prepare the API request payload
     payload = {
@@ -41,6 +48,7 @@ def extract_data(image):
         extracted_data.append((item, price))
 
     return extracted_data
+
 
 def generate_barcode(item):
     # Generate a barcode image for the given item using pyBarcode
