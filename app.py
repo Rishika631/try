@@ -7,7 +7,7 @@ import json
 import barcode
 from barcode.writer import ImageWriter
 
-API_TOKEN = 'YOUR_API_TOKEN'  # Replace with your Hugging Face OCR API token
+API_TOKEN = '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'  # Replace with your Hugging Face OCR API token
 
 def extract_data(image):
     url = "https://api-inference.huggingface.co/models/huggingface/t5-base-ocr"
