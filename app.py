@@ -83,15 +83,15 @@ def analyze_sentiment(transcript):
     sentiments = [result["label"] for result in results]
     return sentiments
 
-def generate_minutes_of_meeting(transcript, insight):
+def generate_minutes_of_meeting(transcript):
     sentences = re.split(r'(?<=[.!?])\s+', transcript)  # Split transcript into sentences
 
-    related_sentences = []
-    for sentence in sentences:
-        if insight.lower() in sentence.lower():
-            related_sentences.append(sentence)
+    minutes_of_meeting = "Minutes of Meeting\n\n"
+    for i, sentence in enumerate(sentences):
+        minutes_of_meeting += f"\t- {sentence}\n"
 
-    return ' '.join(related_sentences)
+    return minutes_of_meeting
+
 
 
 # Function to perform chatbot interaction
@@ -164,7 +164,7 @@ def main():
 
             if "Minutes of Meeting" in options:
                 st.subheader("Minutes of Meeting")
-                mom = generate_minutes_of_meeting(transcript, insights)
+                mom = generate_minutes_of_meeting(transcript)
                 st.text(mom)
             
             # Chatbot
@@ -223,6 +223,17 @@ def main():
                 if user_question:
                     response = chatbot_interaction(transcript, user_question)
                     st.write(response)
+
+            if "Sentiment Analysis" in options:
+                st.subheader("Sentiment Analysis")
+                sentiment_results = analyze_sentiment(transcript)
+                for idx, sentiment in enumerate(sentiment_results):
+                    st.write(f"Sentiment {idx+1}: {sentiment}")
+
+            if "Minutes of Meeting" in options:
+                st.subheader("Minutes of Meeting")
+                mom = generate_minutes_of_meeting(transcript)
+                st.text(mom)
 
             # Delete the uploaded video file
             os.remove(video_path)
