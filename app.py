@@ -1,6 +1,6 @@
 import streamlit as st
 import requests
-from pytube3 import YouTube
+from pytube import YouTube
 from PIL import Image
 import moviepy.editor as mp
 
