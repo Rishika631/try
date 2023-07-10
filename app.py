@@ -22,12 +22,13 @@ def extract_transcript(youtube_video):
 
 
 # Function to summarize transcript
+# Function to summarize transcript
 def summarize_transcript(transcript):
     # Split transcript into chunks of 1000 characters (for T5 model limitation)
     chunks = [transcript[i:i+1000] for i in range(0, len(transcript), 1000)]
 
     # Initialize summarization model
-    summarizer = pipeline('summarization')
+    summarizer = pipeline('summarization', model='sshleifer/distilbart-cnn-12-6')
 
     # Summarize each chunk and combine the summaries
     summarized_text = []
@@ -37,6 +38,7 @@ def summarize_transcript(transcript):
         summarized_text.append(out)
 
     return summarized_text
+
 
 
 # Function to extract key points from the video using moviepy
