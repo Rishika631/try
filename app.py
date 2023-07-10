@@ -18,16 +18,13 @@ def extract_data(image):
     }
 
     # Convert the image to base64
-    image_base64 = image.tobytes()
-
-    # Convert the image_base64 to a list
-    image_base64_list = image_base64.tolist()
+    image_base64 = base64.b64encode(image).decode('utf-8')
 
     # Prepare the API request payload
     payload = {
         "inputs": {
             "image": {
-                "base64": image_base64_list
+                "base64": image_base64
             }
         }
     }
