@@ -1,4 +1,4 @@
 streamlit==0.88.0
-pytube==9.6.4
+pytube
 Pillow==8.2.0
 moviepy==1.0.3
