@@ -23,19 +23,7 @@ def extract_transcript(youtube_video):
     for segment in transcript:
         transcript_text += segment['text'] + " "
 
-    # Extract speakers using named entity recognition
-    nlp = spacy.load("en_core_web_sm")
-    doc = nlp(transcript_text)
-    speakers = []
-    current_speaker = None
-
-    for token in doc:
-        if token.ent_type_ == "PERSON":
-            if current_speaker is None or token.text != current_speaker:
-                current_speaker = token.text
-                speakers.append(current_speaker)
-
-    return transcript_text, speakers
+    return transcript_text
 
 
 
