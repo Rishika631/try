@@ -43,9 +43,10 @@ def extract_transcript(youtube_video):
 
 # Function to summarize transcript using OpenAI's text summarization model
 def summarize_transcript(transcript):
+    prompt = "Summarize the following transcript:\n\n" + transcript
     response = openai.Completion.create(
         engine="text-davinci-003",
-        prompt=transcript,
+        prompt=prompt,
         max_tokens=200,
         temperature=0.3,
         top_p=1.0,
