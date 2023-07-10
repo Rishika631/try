@@ -1,13 +1,15 @@
+
 import streamlit as st
-from transformers import pipeline
+import openai
 from youtube_transcript_api import YouTubeTranscriptApi
 import moviepy.editor as mp
 import os
 
+# Set OpenAI API credentials
+openai.api_key = "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"
 
 # Set Streamlit page configuration
 st.set_page_config(page_title="YouTube Video Summarizer and Insights")
-
 
 # Function to extract transcript from YouTube video
 def extract_transcript(youtube_video):
@@ -20,26 +22,19 @@ def extract_transcript(youtube_video):
 
     return transcript_text
 
-
-# Function to summarize transcript
-# Function to summarize transcript
+# Function to summarize transcript using OpenAI's text summarization model
 def summarize_transcript(transcript):
-    # Split transcript into chunks of 1000 characters (for T5 model limitation)
-    chunks = [transcript[i:i+1000] for i in range(0, len(transcript), 1000)]
-
-    # Initialize summarization model
-    summarizer = pipeline('summarization', model='sshleifer/distilbart-cnn-12-6')
-
-    # Summarize each chunk and combine the summaries
-    summarized_text = []
-    for chunk in chunks:
-        out = summarizer(chunk)
-        out = out[0]['summary_text']
-        summarized_text.append(out)
-
-    return summarized_text
-
-
+    response = openai.Completion.create(
+        engine="text-davinci-003",
+        prompt=transcript,
+        max_tokens=200,
+        temperature=0.3,
+        top_p=1.0,
+        frequency_penalty=0.0,
+        presence_penalty=0.0
+    )
+    summary = response.choices[0].text.strip()
+    return summary
 
 # Function to extract key points from the video using moviepy
 def extract_key_points(video_path):
@@ -57,7 +52,6 @@ def extract_key_points(video_path):
 
     return key_frames, key_points
 
-
 # Function to extract action insights from transcript
 def extract_action_insights(transcript):
     # Placeholder logic - Extract sentences containing action-oriented keywords
@@ -66,16 +60,15 @@ def extract_action_insights(transcript):
 
     # Split transcript into sentences
     sentences = transcript.split(".")
-
+    
     for sentence in sentences:
         sentence = sentence.strip()
         for keyword in keywords:
             if keyword in sentence:
                 insights.append(sentence)
                 break
-
+    
     return insights
-
 
 # Function to perform chatbot interaction
 def chatbot_interaction(transcript, question):
@@ -90,7 +83,6 @@ def chatbot_interaction(transcript, question):
             break
 
     return response
-
 
 # Streamlit app
 def main():
@@ -118,18 +110,15 @@ def main():
             # Summarization
             if "Summarization" in options:
                 st.subheader("Transcript Summary")
-                st.text('\n'.join(summary))
+                st.text(summary)
 
             # Key Points
             if "Key Points" in options:
                 st.subheader("Key Points")
                 key_frames, key_points = extract_key_points(youtube_video)
                 for idx, key_frame in enumerate(key_frames):
-                    image_filename = f"key_frame_{idx}.png"
                     st.image(key_frame, caption=f"Key Frame {idx+1}")
                     st.write(key_points[idx])
-                    # Save key frame as PNG image
-                    key_frame.save(image_filename)
 
             # Action Insights
             if "Action Insights" in options:
@@ -170,18 +159,15 @@ def main():
             # Summarization
             if "Summarization" in options:
                 st.subheader("Transcript Summary")
-                st.text('\n'.join(summary))
+                st.text(summary)
 
             # Key Points
             if "Key Points" in options:
                 st.subheader("Key Points")
                 key_frames, key_points = extract_key_points(video_path)
                 for idx, key_frame in enumerate(key_frames):
-                    image_filename = f"key_frame_{idx}.png"
                     st.image(key_frame, caption=f"Key Frame {idx+1}")
                     st.write(key_points[idx])
-                    # Save key frame as PNG image
-                    key_frame.save(image_filename)
 
             # Action Insights
             if "Action Insights" in options:
@@ -201,6 +187,6 @@ def main():
             # Delete the uploaded video file
             os.remove(video_path)
 
-
 if __name__ == "__main__":
     main()
+
