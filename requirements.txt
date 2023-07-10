@@ -3,3 +3,4 @@ Pillow
 openpyxl
 requests
 python-barcode
+opencv-python-headless
