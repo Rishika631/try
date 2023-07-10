@@ -88,7 +88,7 @@ def extract_discussion(transcript, insights):
 
     related_sentences = []
     for sentence in sentences:
-        if key_point.lower() in sentence.lower():
+        if insights.lower() in sentence.lower():
             related_sentences.append(sentence)
 
     return ' '.join(related_sentences)
@@ -164,7 +164,7 @@ def main():
 
             if "Minutes of Meeting" in options:
                 st.subheader("Minutes of Meeting")
-                mom = generate_minutes_of_meeting(transcript, key_points)
+                mom = generate_minutes_of_meeting(transcript, insights)
                 st.text(mom)
             
             # Chatbot
