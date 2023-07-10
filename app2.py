@@ -1,3 +1,4 @@
+
 import streamlit as st
 import openai
 from youtube_transcript_api import YouTubeTranscriptApi
@@ -5,7 +6,7 @@ import moviepy.editor as mp
 import os
 
 # Set OpenAI API credentials
-openai.api_key = "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"
+openai.api_key = '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'
 
 # Set Streamlit page configuration
 st.set_page_config(page_title="YouTube Video Summarizer and Insights")
@@ -71,17 +72,22 @@ def extract_action_insights(transcript):
 
 # Function to perform chatbot interaction
 def chatbot_interaction(transcript, question):
-    # Placeholder logic - Simple matching based on keywords in transcript and question
-    keywords = ["how", "what", "why"]
-    response = "I'm sorry, I don't have an answer for that question."
+    # Use LangChain API or any other OpenAI model API for chatbot
+    response = openai.Completion.create(
+        engine="text-davinci-003",
+        prompt=f"Transcript: {transcript}\nQuestion: {question}",
+        max_tokens=75,
+        temperature=0.7,
+        top_p=1.0,
+        frequency_penalty=0.0,
+        presence_penalty=0.0
+    )
+    answer = response.choices[0].text.strip()
 
-    # Check if question keywords are present in the transcript
-    for keyword in keywords:
-        if keyword in transcript.lower() and keyword in question.lower():
-            response = "The answer to your question can be found in the video."
-            break
-
-    return response
+    if answer:
+        return answer
+    else:
+        return "I'm sorry, I don't have an answer for that question."
 
 # Streamlit app
 def main():
