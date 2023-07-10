@@ -1,46 +1,59 @@
+import cv2
 import streamlit as st
-import requests
+import numpy as np
+import pafy
 from PIL import Image
-import io
 
-API_URL = "https://api-inference.huggingface.co/models/to-be/donut-base-finetuned-invoices"
-headers = {"Authorization": "Bearer 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"}
-
-def query(image_bytes):
-    response = requests.post(API_URL, headers=headers, data=image_bytes)
-    return response.text
-
+# Streamlit app
 def main():
-    st.title("Documented Form Text Extraction")
-    st.write("Upload an image of a handwritten form to extract the text.")
+    st.title("YouTube Video Image Summary")
 
-    sample_images = [
-        "image.jpg",
-        "image2.jpg",
-        "image3.jpg"
-    ]
+    # Get YouTube link from user
+    youtube_link = st.text_input("Enter YouTube video link")
 
-    uploaded_file = st.file_uploader("Upload Image", type=['jpg', 'jpeg', 'png'])
+    # Generate summary button
+    if st.button("Generate Summary"):
+        if youtube_link:
+            try:
+                # Extract key frames from the video
+                key_frames = extract_key_frames(youtube_link)
 
-    if uploaded_file is not None:
-        image_bytes = uploaded_file.read()
-        output = query(image_bytes)
-        st.write("Extracted Text:")
-        st.write(output)
+                # Display the key frames as an image summary
+                display_summary(key_frames)
+            except Exception as e:
+                st.error("An error occurred: " + str(e))
+        else:
+            st.warning("Please enter a YouTube video link")
 
-    selected_image = st.sidebar.selectbox("Select Sample Image", sample_images)
+# Extract key frames from the video using OpenCV
+def extract_key_frames(youtube_link):
+    video = pafy.new(youtube_link)
+    best = video.getbest(preftype="mp4")
+    cap = cv2.VideoCapture(best.url)
 
-    st.subheader("Selected Image:")
+    key_frames = []
+    frame_count = 0
+    while cap.isOpened():
+        ret, frame = cap.read()
+        if not ret:
+            break
+        if frame_count % 60 == 0:  # Change key frame interval as desired
+            key_frames.append(frame)
+        frame_count += 1
 
-    image = Image.open(selected_image)
-    st.image(image, use_column_width=True)
+    cap.release()
+    return key_frames
 
-    if st.button("Use this Image"):
-        with open(selected_image, "rb") as f:
-            image_bytes = f.read()
-        output = query(image_bytes)
-        st.write("Extracted Text:")
-        st.write(output)
+# Display the key frames as an image summary
+def display_summary(key_frames):
+    st.subheader("Video Image Summary")
+    if key_frames:
+        for key_frame in key_frames:
+            image = Image.fromarray(key_frame)
+            st.image(image, caption="Key Frame")
+    else:
+        st.warning("No key frames found in the video")
 
+# Run the Streamlit app
 if __name__ == "__main__":
     main()
