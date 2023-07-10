@@ -54,32 +54,20 @@ def extract_key_points(video_path):
 
 # Function to extract action insights from transcript
 def extract_action_insights(transcript):
-    # Define the action-oriented keywords
+    # Placeholder logic - Extract sentences containing action-oriented keywords
     keywords = ["do", "perform", "execute", "implement", "take action"]
     insights = []
 
-    # Generate action insights using OpenAI's GPT-3 model
-    response = openai.Completion.create(
-        engine="davinci",
-        prompt=transcript,
-        max_tokens=100,
-        temperature=0.3,
-        top_p=1.0,
-        frequency_penalty=0.0,
-        presence_penalty=0.0,
-        n = 5
-    )
-    answer = response.choices[0].text.strip()
-
-    # Process the answer and extract relevant insights
-    sentences = answer.split(".")
+    # Split transcript into sentences
+    sentences = transcript.split(".")
+    
     for sentence in sentences:
         sentence = sentence.strip()
         for keyword in keywords:
             if keyword in sentence:
                 insights.append(sentence)
                 break
-
+    
     return insights
 
 # Function to perform chatbot interaction
