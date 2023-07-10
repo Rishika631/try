@@ -2,5 +2,6 @@ streamlit
 Pillow
 openpyxl
 requests
-python-barcode
+numpy==1.21.0
+pafy==0.5.5
 opencv-python-headless
