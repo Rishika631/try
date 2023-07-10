@@ -53,10 +53,11 @@ def extract_data(image):
 
 def generate_barcode(item):
     # Generate a barcode image for the given item using pyBarcode
+    barcode_image_path = f'{item}.png'
     barcode_image = barcode.get('code39', str(item), writer=ImageWriter()).render(writer_options={'module_width': 0.2, 'module_height': 15})
-    with open(f'{item}.png', 'wb') as f:
+    with open(barcode_image_path, 'wb') as f:
         f.write(barcode_image)
-    return f'{item}.png'
+    return barcode_image_path
 
 
 def save_to_excel(data):
@@ -72,7 +73,7 @@ def save_to_excel(data):
         sheet.cell(row=row, column=2).value = price
 
     # Save the Excel file
-    wb.save('invoice_data.xlsx')
+    wb.save('invoice_data.xlsx', 'xlsx') 
 
 def main():
     st.title("Invoice Processing App")
