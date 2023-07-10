@@ -106,7 +106,7 @@ def main():
             st.info("Transcript processed successfully!")
 
             # Display options
-            options = st.sidebar.multiselect("Select Options:", ["Summarization", "Key Points"])
+            options = st.sidebar.multiselect("Select Options:", ["Summarization", "Key Points", "Action Insights", "Chatbot"])
 
             # Summarization
             if "Summarization" in options:
@@ -123,6 +123,21 @@ def main():
                     st.write(key_points[idx])
                     # Save key frame as PNG image
                     key_frame.save(image_filename)
+
+            # Action Insights
+            if "Action Insights" in options:
+                st.subheader("Action Insights")
+                insights = extract_action_insights(transcript)
+                for insight in insights:
+                    st.write(insight)
+
+            # Chatbot
+            if "Chatbot" in options:
+                st.subheader("Chatbot")
+                user_question = st.text_input("Ask a question:")
+                if user_question:
+                    response = chatbot_interaction(transcript, user_question)
+                    st.write(response)
 
     elif option == "Local File":
         # File upload feature
@@ -143,7 +158,7 @@ def main():
             st.info("Transcript processed successfully!")
 
             # Display options
-            options = st.sidebar.multiselect("Select Options:", ["Summarization", "Key Points"])
+            options = st.sidebar.multiselect("Select Options:", ["Summarization", "Key Points", "Action Insights", "Chatbot"])
 
             # Summarization
             if "Summarization" in options:
@@ -160,6 +175,21 @@ def main():
                     st.write(key_points[idx])
                     # Save key frame as PNG image
                     key_frame.save(image_filename)
+
+            # Action Insights
+            if "Action Insights" in options:
+                st.subheader("Action Insights")
+                insights = extract_action_insights(transcript)
+                for insight in insights:
+                    st.write(insight)
+
+            # Chatbot
+            if "Chatbot" in options:
+                st.subheader("Chatbot")
+                user_question = st.text_input("Ask a question:")
+                if user_question:
+                    response = chatbot_interaction(transcript, user_question)
+                    st.write(response)
 
             # Delete the uploaded video file
             os.remove(video_path)
