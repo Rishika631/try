@@ -1,59 +1,101 @@
-import cv2
 import streamlit as st
-import numpy as np
-import pafy
+import cv2
+import openpyxl
+from openpyxl import Workbook
+from pyzbar.pyzbar import decode
 from PIL import Image
+import requests
+import json
+import barcode
+from barcode.writer import ImageWriter
 
-# Streamlit app
+API_TOKEN = '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'  # Replace with your Hugging Face OCR API token
+
+def extract_data(image):
+    url = "https://api-inference.huggingface.co/models/huggingface/t5-base-ocr"
+    headers = {
+        'Authorization': f'Bearer {API_TOKEN}',
+        'Content-Type': 'application/json'
+    }
+
+    # Convert the image to base64
+    _, encoded_image = cv2.imencode('.jpg', image)
+    image_base64 = encoded_image.tobytes()
+
+    # Prepare the API request payload
+    payload = {
+        "inputs": {
+            "image": {
+                "base64": image_base64
+            }
+        }
+    }
+
+    # Send the API request
+    response = requests.post(url, headers=headers, data=json.dumps(payload))
+    response_json = response.json()
+
+    # Extract the OCR results
+    extracted_data = []
+    for result in response_json['predictions']:
+        item = result['label']
+        price = result['score']
+        extracted_data.append((item, price))
+
+    return extracted_data
+
+def generate_barcode(item):
+    # Generate a barcode image for the given item using pyBarcode
+    barcode_image = barcode.get_barcode_class('code39')(str(item), writer=ImageWriter()).save(f'{item}.png')
+    return barcode_image
+
+def save_to_excel(data):
+    wb = Workbook()
+    sheet = wb.active
+
+    # Write the data to the Excel sheet
+    sheet['A1'] = 'Item'
+    sheet['B1'] = 'Price'
+
+    for row, (item, price) in enumerate(data, start=2):
+        sheet.cell(row=row, column=1).value = item
+        sheet.cell(row=row, column=2).value = price
+
+    # Save the Excel file
+    wb.save('invoice_data.xlsx')
+
 def main():
-    st.title("YouTube Video Image Summary")
+    st.title("Invoice Processing App")
+    st.write("Upload an invoice image and extract data")
 
-    # Get YouTube link from user
-    youtube_link = st.text_input("Enter YouTube video link")
+    # Upload image
+    uploaded_file = st.file_uploader("Choose an image", type=["jpg", "jpeg", "png"])
 
-    # Generate summary button
-    if st.button("Generate Summary"):
-        if youtube_link:
-            try:
-                # Extract key frames from the video
-                key_frames = extract_key_frames(youtube_link)
+    if uploaded_file is not None:
+        # Convert the uploaded image to OpenCV format
+        image = Image.open(uploaded_file)
+        image_cv = cv2.cvtColor(np.array(image), cv2.COLOR_RGB2BGR)
 
-                # Display the key frames as an image summary
-                display_summary(key_frames)
-            except Exception as e:
-                st.error("An error occurred: " + str(e))
-        else:
-            st.warning("Please enter a YouTube video link")
+        # Display the uploaded image
+        st.image(image, caption='Uploaded Image', use_column_width=True)
 
-# Extract key frames from the video using OpenCV
-def extract_key_frames(youtube_link):
-    video = pafy.new(youtube_link)
-    best = video.getbest(preftype="mp4")
-    cap = cv2.VideoCapture(best.url)
+        # Extract data from the invoice
+        extracted_data = extract_data(image_cv)
 
-    key_frames = []
-    frame_count = 0
-    while cap.isOpened():
-        ret, frame = cap.read()
-        if not ret:
-            break
-        if frame_count % 60 == 0:  # Change key frame interval as desired
-            key_frames.append(frame)
-        frame_count += 1
+        # Generate barcode for each item
+        for item, price in extracted_data:
+            barcode_image = generate_barcode(item)
+            st.image(barcode_image, caption=f'Barcode for {item}', use_column_width=True)
 
-    cap.release()
-    return key_frames
+        # Save data to Excel file
+        save_to_excel(extracted_data)
 
-# Display the key frames as an image summary
-def display_summary(key_frames):
-    st.subheader("Video Image Summary")
-    if key_frames:
-        for key_frame in key_frames:
-            image = Image.fromarray(key_frame)
-            st.image(image, caption="Key Frame")
-    else:
-        st.warning("No key frames found in the video")
+        st.success("Data extraction and barcode generation completed.")
+        st.download_button(
+            label='Download Excel',
+            data='invoice_data.xlsx',
+            file_name='invoice_data.xlsx'
+        )
 
-# Run the Streamlit app
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()
