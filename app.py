@@ -1,15 +1,13 @@
 import streamlit as st
-import cv2
+from PIL import Image
 import openpyxl
 from openpyxl import Workbook
-from pyzbar.pyzbar import decode
-from PIL import Image
 import requests
 import json
 import barcode
 from barcode.writer import ImageWriter
 
-API_TOKEN = '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'  # Replace with your Hugging Face OCR API token
+API_TOKEN = 'YOUR_API_TOKEN'  # Replace with your Hugging Face OCR API token
 
 def extract_data(image):
     url = "https://api-inference.huggingface.co/models/huggingface/t5-base-ocr"
@@ -19,8 +17,7 @@ def extract_data(image):
     }
 
     # Convert the image to base64
-    _, encoded_image = cv2.imencode('.jpg', image)
-    image_base64 = encoded_image.tobytes()
+    image_base64 = image.tobytes()
 
     # Prepare the API request payload
     payload = {
@@ -72,15 +69,14 @@ def main():
     uploaded_file = st.file_uploader("Choose an image", type=["jpg", "jpeg", "png"])
 
     if uploaded_file is not None:
-        # Convert the uploaded image to OpenCV format
+        # Convert the uploaded image to PIL format
         image = Image.open(uploaded_file)
-        image_cv = cv2.cvtColor(np.array(image), cv2.COLOR_RGB2BGR)
 
         # Display the uploaded image
         st.image(image, caption='Uploaded Image', use_column_width=True)
 
         # Extract data from the invoice
-        extracted_data = extract_data(image_cv)
+        extracted_data = extract_data(image)
 
         # Generate barcode for each item
         for item, price in extracted_data:
