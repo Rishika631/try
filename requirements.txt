@@ -1,7 +1,5 @@
-streamlit 
-openpyxl 
-pyzbar 
-pyzbar[scripts] 
-pillow 
-requests 
-barcode
+streamlit
+Pillow
+openpyxl
+requests
+python-barcode
