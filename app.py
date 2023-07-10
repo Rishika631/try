@@ -83,7 +83,7 @@ def analyze_sentiment(transcript):
     sentiments = [result["label"] for result in results]
     return sentiments
 
-def extract_discussion(transcript, key_point):
+def extract_discussion(transcript, insights):
     sentences = re.split(r'(?<=[.!?])\s+', transcript)  # Split transcript into sentences
 
     related_sentences = []
