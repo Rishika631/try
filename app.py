@@ -1,7 +1,6 @@
 import streamlit as st
 from pytube import YouTube
-from PIL import Image
-import imageio
+from moviepy.editor import VideoFileClip
 
 # Streamlit app
 def main():
@@ -24,20 +23,22 @@ def main():
         else:
             st.warning("Please enter a YouTube video link")
 
-# Extract key frames from the video using pytube3 and imageio
+# Extract key frames from the video using MoviePy
 def extract_key_frames(youtube_link):
     yt = YouTube(youtube_link)
     video = yt.streams.get_highest_resolution()
     video_path = video.download()
+    clip = VideoFileClip(video_path)
+
     key_frames = []
+    duration = clip.duration
+    interval = duration / 10  # Extract 10 key frames evenly across the video
+    for i in range(10):
+        time = interval * i
+        frame = clip.get_frame(time)
+        key_frames.append(frame)
 
-    # Read key frames using imageio
-    reader = imageio.get_reader(video_path)
-    for idx, frame in enumerate(reader):
-        # Extract key frames at desired intervals
-        if idx % 60 == 0:
-            key_frames.append(frame)
-
+    clip.close()
     return key_frames
 
 # Display the key frames as an image summary
@@ -45,8 +46,7 @@ def display_summary(key_frames):
     st.subheader("Video Image Summary")
     if key_frames:
         for idx, key_frame in enumerate(key_frames):
-            image = Image.fromarray(key_frame)
-            st.image(image, caption=f"Key Frame {idx+1}")
+            st.image(key_frame, caption=f"Key Frame {idx+1}")
     else:
         st.warning("No key frames found in the video")
 
