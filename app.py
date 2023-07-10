@@ -13,7 +13,6 @@ openai.api_key = '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'
 
 # Set Streamlit page configuration
 st.set_page_config(page_title="YouTube Video Summarizer and Insights")
-
 def extract_transcript(youtube_video):
     video_id = parse_qs(urlparse(youtube_video).query).get('v')
     if video_id:
@@ -39,6 +38,7 @@ def extract_transcript(youtube_video):
         return transcript_text, speakers
     else:
         return "", []
+
 
 
 # Function to summarize transcript using OpenAI's text summarization model
