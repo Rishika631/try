@@ -9,9 +9,9 @@ from transformers import pipeline
 from urllib.parse import urlparse, parse_qs
 
 
-
+# testing 
 # Set OpenAI API credentials
-openai.api_key = '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'
+openai.api_key = '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'
 
 # Set Streamlit page configuration
 st.set_page_config(page_title="YouTube Video Summarizer and Insights")
@@ -35,7 +35,7 @@ def summarize_transcript(transcript):
     response = openai.Completion.create(
         engine="text-davinci-003",
         prompt=prompt,
-        max_tokens=150,
+        max_tokens=200,
         temperature=0.3,
         top_p=1.0,
         frequency_penalty=0.0,
@@ -44,21 +44,21 @@ def summarize_transcript(transcript):
     summary = response.choices[0].text.strip()
     return summary
 
-# Function to extract image summary from the video using moviepy
-def extract_image_summary(video_path):
+# Function to extract key points from the video using moviepy
+def extract_key_points(video_path):
     clip = mp.VideoFileClip(video_path)
     duration = clip.duration
     key_frames = []
-    image_summary = []
+    key_points = []
 
     # Extract key frames at desired intervals
     for i in range(10):
         time = duration * i / 10
         frame = clip.get_frame(time)
         key_frames.append(frame)
-        image_summary.append(f"Key Point {i+1}")
+        key_points.append(f"Key Point {i+1}")
 
-    return key_frames, image_summary
+    return key_frames, key_points
 
 # Function to extract action insights from transcript
 def extract_action_insights(transcript):
@@ -136,20 +136,20 @@ def main():
             st.info("Transcript processed successfully!")
 
             # Display options
-            options = st.sidebar.multiselect("Select Options:", ["Summarization", "image summary", "Action Insights", "Sentiment Analysis", "Minutes of Meeting", "Chatbot"])
+            options = st.sidebar.multiselect("Select Options:", ["Summarization", "Key Points", "Action Insights", "Sentiment Analysis", "Minutes of Meeting", "Chatbot"])
 
             # Summarization
             if "Summarization" in options:
                 st.subheader("Transcript Summary")
                 st.text(summary)
 
-            # image summary
-            if "image summary" in options:
-                st.subheader("image summary")
-                key_frames, image_summary = extract_image_summary(youtube_video)
+            # Key Points
+            if "Key Points" in options:
+                st.subheader("Key Points")
+                key_frames, key_points = extract_key_points(youtube_video)
                 for idx, key_frame in enumerate(key_frames):
                     st.image(key_frame, caption=f"Key Frame {idx+1}")
-                    st.write(image_summary[idx])
+                    st.write(key_points[idx])
 
             # Action Insights
             if "Action Insights" in options:
@@ -196,20 +196,20 @@ def main():
             st.info("Transcript processed successfully!")
 
             # Display options
-            options = st.sidebar.multiselect("Select Options:", ["Summarization", "image summary", "Action Insights", "Chatbot"])
+            options = st.sidebar.multiselect("Select Options:", ["Summarization", "Key Points", "Action Insights", "Chatbot"])
 
             # Summarization
             if "Summarization" in options:
                 st.subheader("Transcript Summary")
                 st.text(summary)
 
-            # image summary
-            if "image summary" in options:
-                st.subheader("image summary")
-                key_frames, image_summary = extract_image_summary(video_path)
+            # Key Points
+            if "Key Points" in options:
+                st.subheader("Key Points")
+                key_frames, key_points = extract_key_points(video_path)
                 for idx, key_frame in enumerate(key_frames):
                     st.image(key_frame, caption=f"Key Frame {idx+1}")
-                    st.write(image_summary[idx])
+                    st.write(key_points[idx])
 
             # Action Insights
             if "Action Insights" in options:
