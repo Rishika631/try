@@ -60,23 +60,22 @@ def extract_image_summary(video_path):
 
     return key_frames, image_summary
 
-# Function to extract action insights from transcript
+# Function to extract action insights & Key Points from transcript
+# Function to extract action insights & Key Points from transcript using OpenAI API
 def extract_action_insights(transcript):
-    # Placeholder logic - Extract sentences containing action-oriented keywords
-    keywords = ["do", "perform", "execute", "implement", "take action"]
-    insights = []
-
-    # Split transcript into sentences
-    sentences = transcript.split(".")
-    
-    for sentence in sentences:
-        sentence = sentence.strip()
-        for keyword in keywords:
-            if keyword in sentence:
-                insights.append(sentence)
-                break
-    
+    prompt = "Extract action insights and key points both from the following transcript:\n\n" + transcript
+    response = openai.Completion.create(
+        engine="text-davinci-003",
+        prompt=prompt,
+        max_tokens=200,
+        temperature=0.3,
+        top_p=1.0,
+        frequency_penalty=0.0,
+        presence_penalty=0.0
+    )
+    insights = response.choices[0].text.strip().split("\n")
     return insights
+
 
 def analyze_sentiment(transcript):
     sentiment_analyzer = pipeline("sentiment-analysis")
@@ -136,7 +135,7 @@ def main():
             st.info("Transcript processed successfully!")
 
             # Display options
-            options = st.sidebar.multiselect("Select Options:", ["Summarization", "Image Summary", "Action Insights", "Sentiment Analysis", "Minutes of Meeting", "Chatbot"])
+            options = st.sidebar.multiselect("Select Options:", ["Summarization", "Image Summary", "Action Insights & Key Points", "Sentiment Analysis", "Minutes of Meeting", "Chatbot"])
 
             # Summarization
             if "Summarization" in options:
@@ -151,9 +150,9 @@ def main():
                     st.image(key_frame, caption=f"Key Frame {idx+1}")
                     st.write(image_summary[idx])
 
-            # Action Insights
-            if "Action Insights" in options:
-                st.subheader("Action Insights")
+            # Action Insights & Key Points
+            if "Action Insights & Key Points" in options:
+                st.subheader("Action Insights & Key Points")
                 insights = extract_action_insights(transcript)
                 for insight in insights:
                     st.write(insight)
@@ -196,7 +195,7 @@ def main():
             st.info("Transcript processed successfully!")
 
             # Display options
-            options = st.sidebar.multiselect("Select Options:", ["Summarization", "Image Summary", "Action Insights", "Chatbot"])
+            options = st.sidebar.multiselect("Select Options:", ["Summarization", "Image Summary", "Action Insights & Key Points", "Chatbot"])
 
             # Summarization
             if "Summarization" in options:
@@ -211,9 +210,9 @@ def main():
                     st.image(key_frame, caption=f"Key Frame {idx+1}")
                     st.write(image_summary[idx])
 
-            # Action Insights
-            if "Action Insights" in options:
-                st.subheader("Action Insights")
+            # Action Insights & Key Points
+            if "Action Insights & Key Points" in options:
+                st.subheader("Action Insights & Key Points")
                 insights = extract_action_insights(transcript)
                 for insight in insights:
                     st.write(insight)
