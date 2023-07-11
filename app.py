@@ -60,8 +60,7 @@ def extract_image_summary(video_path):
 
     return key_frames, image_summary
 
-# Function to extract action insights & Key Points from transcript
-# Function to extract action insights & Key Points from transcript using OpenAI API
+# Function to extract action insights & Key Points from transcript 
 def extract_action_insights(transcript):
     prompt = "Extract action insights and key points both from the following transcript:\n\n" + transcript
     response = openai.Completion.create(
@@ -84,14 +83,21 @@ def analyze_sentiment(transcript):
     sentiments = [result["label"] for result in results]
     return sentiments
 
-def generate_minutes_of_meeting(transcript):
-    sentences = re.split(r'(?<=[.!?])\s+', transcript)  # Split transcript into sentences
+# Function to extract a given task 
 
-    minutes_of_meeting = "Minutes of Meeting\n\n"
-    for i, sentence in enumerate(sentences):
-        minutes_of_meeting += f"\t- {sentence}\n"
-
-    return minutes_of_meeting
+def extract_task_from_transcript(transcript, task):
+    prompt = f"{task} from the following transcript and mention to whome the task is given:\n\n{transcript}"
+    response = openai.Completion.create(
+        engine="text-davinci-003",
+        prompt=prompt,
+        max_tokens=200,
+        temperature=0.3,
+        top_p=1.0,
+        frequency_penalty=0.0,
+        presence_penalty=0.0
+    )
+    tasks = response.choices[0].text.strip().split("\n")
+    return tasks
 
 
 
@@ -135,7 +141,7 @@ def main():
             st.info("Transcript processed successfully!")
 
             # Display options
-            options = st.sidebar.multiselect("Select Options:", ["Summarization", "Image Summary", "Action Insights & Key Points", "Sentiment Analysis", "Minutes of Meeting", "Chatbot"])
+            options = st.sidebar.multiselect("Select Options:", ["Summarization", "Image Summary", "Action Insights & Key Points", "Sentiment Analysis", "Given Task", "Chatbot"])
 
             # Summarization
             if "Summarization" in options:
@@ -157,16 +163,19 @@ def main():
                 for insight in insights:
                     st.write(insight)
 
+             #  Sentiment Analysis
             if "Sentiment Analysis" in options:
                 st.subheader("Sentiment Analysis")
                 sentiment_results = analyze_sentiment(transcript)
                 for idx, sentiment in enumerate(sentiment_results):
                     st.write(f"Sentiment {idx+1}: {sentiment}")
 
-            if "Minutes of Meeting" in options:
-                st.subheader("Minutes of Meeting")
-                mom = generate_minutes_of_meeting(transcript)
-                st.text(mom)
+            # Given Task
+            if "Given Task" in options:
+                st.subheader("Given Task")
+                tasks = extract_task_from_transcript(transcript, "Extract task")
+                for task in tasks:
+                    st.write(task)
             
             # Chatbot
             if "Chatbot" in options:
@@ -195,7 +204,7 @@ def main():
             st.info("Transcript processed successfully!")
 
             # Display options
-            options = st.sidebar.multiselect("Select Options:", ["Summarization", "Image Summary", "Action Insights & Key Points", "Chatbot"])
+            options = st.sidebar.multiselect("Select Options:", ["Summarization", "Image Summary", "Action Insights & Key Points", "Sentiment Analysis", "Given Task", "Chatbot"])
 
             # Summarization
             if "Summarization" in options:
@@ -225,16 +234,20 @@ def main():
                     response = chatbot_interaction(transcript, user_question)
                     st.write(response)
 
+           #  Sentiment Analysis
             if "Sentiment Analysis" in options:
                 st.subheader("Sentiment Analysis")
                 sentiment_results = analyze_sentiment(transcript)
                 for idx, sentiment in enumerate(sentiment_results):
                     st.write(f"Sentiment {idx+1}: {sentiment}")
 
-            if "Minutes of Meeting" in options:
-                st.subheader("Minutes of Meeting")
-                mom = generate_minutes_of_meeting(transcript)
-                st.text(mom)
+           # Given Task
+            if "Given Task" in options:
+                st.subheader("Given Task")
+                tasks = extract_task_from_transcript(transcript, "Extract task")
+                for task in tasks:
+                    st.write(task)
+         
 
             # Delete the uploaded video file
             os.remove(video_path)
