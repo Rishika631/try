@@ -9,7 +9,7 @@ from transformers import pipeline
 from urllib.parse import urlparse, parse_qs
 
 
-# testing 
+
 # Set OpenAI API credentials
 openai.api_key = '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'
 
