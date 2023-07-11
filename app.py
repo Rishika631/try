@@ -29,9 +29,9 @@ def extract_transcript(youtube_video):
 
 
 
-# Function to summarize transcript using OpenAI's text summarization model
+# Function to summarize transcript using OpenAI's text Meeting Summary model
 def summarize_transcript(transcript):
-    prompt = "Summarize the following transcript:\n\n" + transcript
+    prompt = "Summarize the following transcript in 100 words:\n\n" + transcript
     response = openai.Completion.create(
         engine="text-davinci-003",
         prompt=prompt,
@@ -138,14 +138,14 @@ def main():
             # Summarize transcript
             summary = summarize_transcript(transcript)
 
-            st.info("Transcript processed successfully!")
+            st.info("Meeting processed successfully!")
 
             # Display options
-            options = st.sidebar.multiselect("Select Options:", ["Summarization", "Image Summary", "Action Insights & Key Points", "Sentiment Analysis", "Given Task", "Chatbot"])
+            options = st.sidebar.multiselect("Select Options:", ["Meeting Summary", "Image Summary", "Action Insights & Key Points", "Sentiment Analysis", "Given Task", "Chatbot"])
 
-            # Summarization
-            if "Summarization" in options:
-                st.subheader("Transcript Summary")
+            # Meeting Summary
+            if "Meeting Summary" in options:
+                st.subheader("Meeting Summary")
                 st.text(summary)
 
             # Image Summary
@@ -204,11 +204,11 @@ def main():
             st.info("Transcript processed successfully!")
 
             # Display options
-            options = st.sidebar.multiselect("Select Options:", ["Summarization", "Image Summary", "Action Insights & Key Points", "Sentiment Analysis", "Given Task", "Chatbot"])
+            options = st.sidebar.multiselect("Select Options:", ["Meeting Summary", "Image Summary", "Action Insights & Key Points", "Sentiment Analysis", "Given Task", "Chatbot"])
 
-            # Summarization
-            if "Summarization" in options:
-                st.subheader("Transcript Summary")
+            # Meeting Summary
+            if "Meeting Summary" in options:
+                st.subheader("Meeting Summary")
                 st.text(summary)
 
             # Image Summary
