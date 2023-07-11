@@ -44,21 +44,21 @@ def summarize_transcript(transcript):
     summary = response.choices[0].text.strip()
     return summary
 
-# Function to extract key points from the video using moviepy
-def extract_key_points(video_path):
+# Function to extract Image Summary from the video using moviepy
+def extract_image_summary(video_path):
     clip = mp.VideoFileClip(video_path)
     duration = clip.duration
     key_frames = []
-    key_points = []
+    image_summary = []
 
     # Extract key frames at desired intervals
     for i in range(10):
         time = duration * i / 10
         frame = clip.get_frame(time)
         key_frames.append(frame)
-        key_points.append(f"Key Point {i+1}")
+        image_summary.append(f"Key Point {i+1}")
 
-    return key_frames, key_points
+    return key_frames, image_summary
 
 # Function to extract action insights from transcript
 def extract_action_insights(transcript):
@@ -136,20 +136,20 @@ def main():
             st.info("Transcript processed successfully!")
 
             # Display options
-            options = st.sidebar.multiselect("Select Options:", ["Summarization", "Key Points", "Action Insights", "Sentiment Analysis", "Minutes of Meeting", "Chatbot"])
+            options = st.sidebar.multiselect("Select Options:", ["Summarization", "Image Summary", "Action Insights", "Sentiment Analysis", "Minutes of Meeting", "Chatbot"])
 
             # Summarization
             if "Summarization" in options:
                 st.subheader("Transcript Summary")
                 st.text(summary)
 
-            # Key Points
-            if "Key Points" in options:
-                st.subheader("Key Points")
-                key_frames, key_points = extract_key_points(youtube_video)
+            # Image Summary
+            if "Image Summary" in options:
+                st.subheader("Image Summary")
+                key_frames, image_summary = extract_image_summary(youtube_video)
                 for idx, key_frame in enumerate(key_frames):
                     st.image(key_frame, caption=f"Key Frame {idx+1}")
-                    st.write(key_points[idx])
+                    st.write(image_summary[idx])
 
             # Action Insights
             if "Action Insights" in options:
@@ -196,20 +196,20 @@ def main():
             st.info("Transcript processed successfully!")
 
             # Display options
-            options = st.sidebar.multiselect("Select Options:", ["Summarization", "Key Points", "Action Insights", "Chatbot"])
+            options = st.sidebar.multiselect("Select Options:", ["Summarization", "Image Summary", "Action Insights", "Chatbot"])
 
             # Summarization
             if "Summarization" in options:
                 st.subheader("Transcript Summary")
                 st.text(summary)
 
-            # Key Points
-            if "Key Points" in options:
-                st.subheader("Key Points")
-                key_frames, key_points = extract_key_points(video_path)
+            # Image Summary
+            if "Image Summary" in options:
+                st.subheader("Image Summary")
+                key_frames, image_summary = extract_image_summary(video_path)
                 for idx, key_frame in enumerate(key_frames):
                     st.image(key_frame, caption=f"Key Frame {idx+1}")
-                    st.write(key_points[idx])
+                    st.write(image_summary[idx])
 
             # Action Insights
             if "Action Insights" in options:
