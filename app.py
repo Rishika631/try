@@ -31,7 +31,7 @@ def extract_transcript(youtube_video):
 
 # Function to summarize transcript using OpenAI's text Meeting Summary model
 def summarize_transcript(transcript):
-    prompt = "Summarize the following transcript in 100 words:\n\n" + transcript
+    prompt = "Extract summary from the following transcript in 100 words:\n\n" + transcript
     response = openai.Completion.create(
         engine="text-davinci-003",
         prompt=prompt,
@@ -43,6 +43,7 @@ def summarize_transcript(transcript):
     )
     summary = response.choices[0].text.strip()
     return summary
+
 
 # Function to extract Image Summary from the video using moviepy
 def extract_image_summary(video_path):
