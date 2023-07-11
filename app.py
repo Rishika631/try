@@ -1,9 +1,12 @@
-
+import spacy
+import re
 import streamlit as st
 import openai
 from youtube_transcript_api import YouTubeTranscriptApi
 import moviepy.editor as mp
 import os
+from transformers import pipeline
+from urllib.parse import urlparse, parse_qs
 
 
 # testing 
@@ -24,11 +27,14 @@ def extract_transcript(youtube_video):
 
     return transcript_text
 
+
+
 # Function to summarize transcript using OpenAI's text summarization model
 def summarize_transcript(transcript):
+    prompt = "Summarize the following transcript:\n\n" + transcript
     response = openai.Completion.create(
         engine="text-davinci-003",
-        prompt=transcript,
+        prompt=prompt,
         max_tokens=200,
         temperature=0.3,
         top_p=1.0,
@@ -72,6 +78,24 @@ def extract_action_insights(transcript):
     
     return insights
 
+def analyze_sentiment(transcript):
+    sentiment_analyzer = pipeline("sentiment-analysis")
+    results = sentiment_analyzer(transcript)
+
+    sentiments = [result["label"] for result in results]
+    return sentiments
+
+def generate_minutes_of_meeting(transcript):
+    sentences = re.split(r'(?<=[.!?])\s+', transcript)  # Split transcript into sentences
+
+    minutes_of_meeting = "Minutes of Meeting\n\n"
+    for i, sentence in enumerate(sentences):
+        minutes_of_meeting += f"\t- {sentence}\n"
+
+    return minutes_of_meeting
+
+
+
 # Function to perform chatbot interaction
 def chatbot_interaction(transcript, question):
     # Use LangChain API or any other OpenAI model API for chatbot
@@ -112,7 +136,7 @@ def main():
             st.info("Transcript processed successfully!")
 
             # Display options
-            options = st.sidebar.multiselect("Select Options:", ["Summarization", "Key Points", "Action Insights", "Chatbot"])
+            options = st.sidebar.multiselect("Select Options:", ["Summarization", "Key Points", "Action Insights", "Sentiment Analysis", "Minutes of Meeting", "Chatbot"])
 
             # Summarization
             if "Summarization" in options:
@@ -134,6 +158,17 @@ def main():
                 for insight in insights:
                     st.write(insight)
 
+            if "Sentiment Analysis" in options:
+                st.subheader("Sentiment Analysis")
+                sentiment_results = analyze_sentiment(transcript)
+                for idx, sentiment in enumerate(sentiment_results):
+                    st.write(f"Sentiment {idx+1}: {sentiment}")
+
+            if "Minutes of Meeting" in options:
+                st.subheader("Minutes of Meeting")
+                mom = generate_minutes_of_meeting(transcript)
+                st.text(mom)
+            
             # Chatbot
             if "Chatbot" in options:
                 st.subheader("Chatbot")
@@ -190,6 +225,17 @@ def main():
                 if user_question:
                     response = chatbot_interaction(transcript, user_question)
                     st.write(response)
+
+            if "Sentiment Analysis" in options:
+                st.subheader("Sentiment Analysis")
+                sentiment_results = analyze_sentiment(transcript)
+                for idx, sentiment in enumerate(sentiment_results):
+                    st.write(f"Sentiment {idx+1}: {sentiment}")
+
+            if "Minutes of Meeting" in options:
+                st.subheader("Minutes of Meeting")
+                mom = generate_minutes_of_meeting(transcript)
+                st.text(mom)
 
             # Delete the uploaded video file
             os.remove(video_path)
