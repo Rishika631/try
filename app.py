@@ -5,6 +5,8 @@ from youtube_transcript_api import YouTubeTranscriptApi
 import moviepy.editor as mp
 import os
 
+
+# testing 
 # Set OpenAI API credentials
 openai.api_key = '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'
 
