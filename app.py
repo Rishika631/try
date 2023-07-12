@@ -9,6 +9,9 @@ from transformers import pipeline
 from urllib.parse import urlparse, parse_qs
 
 # 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 -new api key - kartik
+# 132899854032-jb5gpnuh5fbllo8d08mb1dpqeilafkku.apps.googleusercontent.com (Client ID- g calander-kartik)
+# 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  (Client secret  g calander-kartik) 
+
 
 # Set OpenAI API credentials
 openai.api_key = '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'
