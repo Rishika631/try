@@ -11,7 +11,7 @@ from urllib.parse import urlparse, parse_qs
 # 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 -new api key - kartik
 
 # Set OpenAI API credentials
-openai.api_key = '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'
+openai.api_key = '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' #Kartik-API KEYS
 
 # Set Streamlit page configuration
 st.set_page_config(page_title="YouTube Video Summarizer and Insights")
