@@ -10,7 +10,7 @@ from urllib.parse import urlparse, parse_qs
 from google_calendar_integration import send_calendar_notification
 
 
-# Demo youtube video :-  https://www.youtube.com/watch?v=sapH1OnmfQg&t=153s&ab_channel=EnglishTogether
+# Demo youtube video :- https://www.youtube.com/watch?v=sapH1OnmfQg&t=153s&ab_channel=EnglishTogether
                       # https://www.youtube.com/watch?v=z-8o9sp8YIA&t=36s&ab_channel=LearnEnglishbyPocketPassport
 
 # Set OpenAI API credentials
@@ -81,6 +81,22 @@ def extract_action_insights(transcript):
     send_calendar_notification(insights)
     return insights
 
+# Function to extract Area of improment for each of the person from transcript 
+def extract_area_of_improvment(transcript):
+    prompt = "Extract Area of improment for each person from the following transcript( list down area of improvement in seperate line): \n\n" + transcript
+    response = openai.Completion.create(
+        engine="text-davinci-003",
+        prompt=prompt,
+        max_tokens=200,
+        temperature=0.3,
+        top_p=1.0,
+        frequency_penalty=0.0,
+        presence_penalty=0.0
+    )
+    areaofimp = response.choices[0].text.strip().split("\n")
+    
+    return areaofimp
+
 # Function to analyze_sentiment
 
 def analyze_sentiment(transcript):
@@ -128,7 +144,6 @@ def chatbot_interaction(transcript, question):
     
 
 
-    
 # Streamlit app
 def main():
     st.header("Team NeuronX : AI-Driven VidSummarizer")
@@ -149,7 +164,7 @@ def main():
             # st.info("Meeting processed successfully!") 
 
             # Display options
-            options = st.sidebar.multiselect("Select Options:", ["Meeting Summary", "Image Summary", "Action Insights & Key Points", "Sentiment Analysis", "Given Task", "Chatbot"])
+            options = st.sidebar.multiselect("Select Options:", ["Meeting Summary", "Image Summary", "Action Insights & Key Points", "Area of Improvement", "Sentiment Analysis", "Given Task", "Chatbot"])
 
             # Meeting Summary
             if "Meeting Summary" in options:
@@ -172,6 +187,13 @@ def main():
                 insights = extract_action_insights(transcript)
                 for insight in insights:
                     st.write(insight)
+
+            # Area of improvemnt 
+            if "Area of Improvement" in options:
+                st.subheader("Area of Improvement")
+                areaofimp = extract_area_of_improvment(transcript)
+                for areaofimps in areaofimp:
+                    st.write(areaofimps)
 
              #  Sentiment Analysis
             if "Sentiment Analysis" in options:
@@ -213,7 +235,7 @@ def main():
             st.success("Meeting processed successfully!")
 
             # Display options
-            options = st.sidebar.multiselect("Select Options:", ["Meeting Summary", "Image Summary", "Action Insights & Key Points", "Sentiment Analysis", "Given Task", "Chatbot"])
+            options = st.sidebar.multiselect("Select Options:", ["Meeting Summary", "Image Summary", "Action Insights & Key Points", "Area of Improvement", "Sentiment Analysis", "Given Task", "Chatbot"])
 
              # Meeting Summary
             if "Meeting Summary" in options:
@@ -236,6 +258,13 @@ def main():
                 insights = extract_action_insights(transcript)
                 for insight in insights:
                     st.write(insight)
+
+            # Area of improvemnt 
+            if "Area of Improvement" in options:
+                st.subheader("Area of Improvement")
+                areaofimp = extract_area_of_improvment(transcript)
+                for areaofimps in areaofimp:
+                    st.write(areaofimps)
 
             # Chatbot
             if "Chatbot" in options:
