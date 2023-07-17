@@ -1,0 +1,35 @@
+https://accounts.google.com/o/oauth2/auth?client_id=439768007196-t88vtabs7bjl0dhhs7av1llidtj1sv3o.apps.googleusercontent.com&redirect_uri=http://localhost:8501&response_type=code&scope=https://www.googleapis.com/auth/calendar&access_type=offline
+
+
+**** code ****
+http://localhost:8501/?code=4/0AZEOvhUr9UBT5pcX7ZXuRFzXS4aeUk2ClxbPkyCS0RQ05C-qDLjUbZ798zERIlFOkvmPPw&scope=https://www.googleapis.com/auth/calendar
+
+
+
+curl --request POST --data "code=4/0AZEOvhUr9UBT5pcX7ZXuRFzXS4aeUk2ClxbPkyCS0RQ05C-qDLjUbZ798zERIlFOkvmPPw&client_id=439768007196-t88vtabs7bjl0dhhs7av1llidtj1sv3o.apps.googleusercontent.com&client_secret=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&redirect_uri=http://localhost:8501&grant_type=authorization_code" https://oauth2.googleapis.com/token
+
+
+
+{
+  "access_token": "ya29.a0AbVbY6N37YBTVIfF7xhup-I9Sx43tW-9oFDozIOvYCGEgZnn12UA6d-tlSTZ_4CqtCruaptXkExF-5q_IXsDXJCbFF40x73KgGs53ha142YVT74VXHmtVgX0k_Y6O-iuTvcE-ZLv9F1faZjC-3f5nQKR_8IeaCgYKAZoSARESFQFWKvPlD2eLGDGLyN0azJNmZ7350w0163",
+  "expires_in": 3599,
+  "refresh_token": "1//0gaV23wzsZaAFCgYIARAAGBASNwF-L9IrhUOL-Pl7Y2fEcvj9FBMzrPrLCNlISKqDi7U6jM74c1Xp7o3g1LHrMxR1hwviCay7M8Q",
+  "scope": "https://www.googleapis.com/auth/calendar",
+  "token_type": "Bearer"
+}
+
+
+
+curl --request POST --data "client_id=439768007196-t88vtabs7bjl0dhhs7av1llidtj1sv3o.apps.googleusercontent.com&client_secret=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&refresh_token=1//0gaV23wzsZaAFCgYIARAAGBASNwF-L9IrhUOL-Pl7Y2fEcvj9FBMzrPrLCNlISKqDi7U6jM74c1Xp7o3g1LHrMxR1hwviCay7M8Q&grant_type=refresh_token" https://oauth2.googleapis.com/token
+
+
+
+****access token valid upto 1 hr *************  every time i have to genrate access token fron refresh token 
+
+
+{
+  "access_token": "ya29.a0AbVbY6MLUbVYrccMLBOC_M3wKeeur9s8p3SXeq1WTk8dCBbbQ5rAz0BNT1GnBucOd2hNtmMIXBXIfKUSw6wsQ09DQkfusd-YfFd6Qq92LyeHrT3jyT6fARWrIdWHY-W66Rb9__Nxnc_kYLu5OLIpufh3VjVw7LoaCgYKAXUSARESFQFWKvPlr9xnO0FfsV53iaMgVtc-2A0166",
+  "expires_in": 3599,
+  "scope": "https://www.googleapis.com/auth/calendar",
+  "token_type": "Bearer"
+}
