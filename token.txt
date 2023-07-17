@@ -1,5 +1,5 @@
+<<Kartik>>>
 https://accounts.google.com/o/oauth2/auth?client_id=439768007196-t88vtabs7bjl0dhhs7av1llidtj1sv3o.apps.googleusercontent.com&redirect_uri=http://localhost:8501&response_type=code&scope=https://www.googleapis.com/auth/calendar&access_type=offline
-
 
 **** code ****
 http://localhost:8501/?code=4/0AZEOvhUr9UBT5pcX7ZXuRFzXS4aeUk2ClxbPkyCS0RQ05C-qDLjUbZ798zERIlFOkvmPPw&scope=https://www.googleapis.com/auth/calendar
@@ -33,3 +33,36 @@ curl --request POST --data "client_id=439768007196-t88vtabs7bjl0dhhs7av1llidtj1s
   "scope": "https://www.googleapis.com/auth/calendar",
   "token_type": "Bearer"
 }
+
+<<<Rishika>>>
+https://accounts.google.com/o/oauth2/auth?client_id=362144388388-eo10tjk4m4i907e0ggd4tso2kmebmcjh.apps.googleusercontent.com&redirect_uri=http://localhost:3000&response_type=code&scope=https://www.googleapis.com/auth/calendar&access_type=offline
+
+**** code ****
+
+http://localhost:3000/?code=4/0AZEOvhV65E_fYv6gSnuC5m-lZHU8_RdQEkKYBG_E9_OdhN0NF2gtyJ3Yso8RbZAkAdPs_Q&scope=https://www.googleapis.com/auth/calendar
+
+curl --request POST --data "code=4/0AZEOvhV65E_fYv6gSnuC5m-lZHU8_RdQEkKYBG_E9_OdhN0NF2gtyJ3Yso8RbZAkAdPs_Q&client_id=362144388388-eo10tjk4m4i907e0ggd4tso2kmebmcjh.apps.googleusercontent.com&client_secret=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&redirect_uri=http://localhost:3000&grant_type=authorization_code" https://oauth2.googleapis.com/token   (run in local pc terminal)
+
+
+{
+  "access_token": "ya29.a0AbVbY6NdB1A7XBLabGp1X0ROtKtum0W5NJhQTC0mPrOTk9za_l4esFaUh12byKESPruNaquSka6gS204_HJaUlyVgkwkMEFp4-HVyiTZU1v5-lfy8qAER_jiVqsF2rAkkNp6-aVS9S64-dZDTjy6DpY3d4URaCgYKAa4SARISFQFWKvPl39txOEQNvyUNvfqmT0uTrQ0163",
+  "expires_in": 3599,
+  "refresh_token": "1//0ggYf76tui-uFCgYIARAAGBASNwF-L9IrzTNLwN700-Oud4TwiY8y7T46G4AWrRXyHMOM14F9RAga3Uq9pyLOYjIL_EfCwZEV15E",
+  "scope": "https://www.googleapis.com/auth/calendar",
+  "token_type": "Bearer"
+}
+
+*****for access token regenaration******
+
+curl --request POST --data "client_id=362144388388-eo10tjk4m4i907e0ggd4tso2kmebmcjh.apps.googleusercontent.com&client_secret=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&refresh_token=1//0ggYf76tui-uFCgYIARAAGBASNwF-L9IrzTNLwN700-Oud4TwiY8y7T46G4AWrRXyHMOM14F9RAga3Uq9pyLOYjIL_EfCwZEV15E&grant_type=refresh_token" https://oauth2.googleapis.com/token
+
+{
+  "access_token": "ya29.a0AbVbY6Oj-UvCCtwSTQY4r5BINgdM4vXXptvIYtiw4iIb7IgjOErQcgIZLIY3kXr5-TOCU4Gg7vVMXZrEohoAgTd1WktcubctxgTCSVIm8RfV_LKkFFY1XKWo56MVQTbv2LlnrdDjjtr5vnmviDSuDufvrXYydEkaCgYKARYSARISFQFWKvPl5h85piaxf7d52QMp2BKUhg0166",
+  "expires_in": 3599,
+  "scope": "https://www.googleapis.com/auth/calendar",
+  "token_type": "Bearer"
+}
+
+{"web":{"client_id":"362144388388-eo10tjk4m4i907e0ggd4tso2kmebmcjh.apps.googleusercontent.com","project_id":"mercer-hackathon","auth_uri":"https://accounts.google.com/o/oauth2/auth","token_uri":"https://oauth2.googleapis.com/token","auth_provider_x509_cert_url":"https://www.googleapis.com/oauth2/v1/certs","client_secret":"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","redirect_uris":["http://localhost:3000"]}}
+
+Google calender api creds above 
