@@ -14,7 +14,7 @@ from google_calendar_integration import send_calendar_notification
                       # https://www.youtube.com/watch?v=z-8o9sp8YIA&t=36s&ab_channel=LearnEnglishbyPocketPassport
 
 # Set OpenAI API credentials
-openai.api_key = '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' #changed API keys
+openai.api_key = '' # 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 changed API keys
 
 # Set Streamlit page configuration
 st.set_page_config(page_title="Team NeuronX : AI-Driven VidSummarizer")
