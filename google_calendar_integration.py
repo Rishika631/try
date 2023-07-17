@@ -13,7 +13,7 @@ TOKEN_FILE = 'token.json'
 CREDENTIALS_FILE = 'credentials.json'
 CALENDAR_ID = 'primary'
 ATTENDEE_EMAILS = [
-    'kartikverma378@gmail.com', 'rishikaagrawal2001@gmail.com'
+    'kartikverma378@gmail.com', 'ajaystores.korba495677@gmail.com'
   
 ]
 TIMEZONE = 'Asia/Kolkata'
