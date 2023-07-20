@@ -5,7 +5,6 @@ from googleapiclient.errors import HttpError
 from google_calendar_integration import *
 
 
-
 def analyze_weekly_data():
     creds = authorize_google_calendar()
     if not creds or not creds.valid:
