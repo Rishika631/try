@@ -8,6 +8,8 @@ import os
 from transformers import pipeline
 from urllib.parse import urlparse, parse_qs
 from google_calendar_integration import send_calendar_notification
+from meeting_analyzer import analyze_weekly_data
+
 
 
 # Demo youtube video :- https://www.youtube.com/watch?v=sapH1OnmfQg&t=153s&ab_channel=EnglishTogether
@@ -81,21 +83,7 @@ def extract_action_insights(transcript):
     send_calendar_notification(insights)
     return insights
 
-# Function to extract Area of improment for each of the person from transcript 
-def extract_area_of_improvment(transcript):
-    prompt = "Extract Area of improment for each person from the following transcript( list down area of improvement in seperate line): \n\n" + transcript
-    response = openai.Completion.create(
-        engine="text-davinci-003",
-        prompt=prompt,
-        max_tokens=200,
-        temperature=0.3,
-        top_p=1.0,
-        frequency_penalty=0.0,
-        presence_penalty=0.0
-    )
-    areaofimp = response.choices[0].text.strip().split("\n")
-    
-    return areaofimp
+
 
 # Function to analyze_sentiment
 
@@ -188,10 +176,10 @@ def main():
                 for insight in insights:
                     st.write(insight)
 
-            # Area of improvemnt 
+            # Area of improvement 
             if "Area of Improvement" in options:
                 st.subheader("Area of Improvement")
-                areaofimp = extract_area_of_improvment(transcript)
+                areaofimp = analyze_weekly_data()
                 for areaofimps in areaofimp:
                     st.write(areaofimps)
 
@@ -259,10 +247,10 @@ def main():
                 for insight in insights:
                     st.write(insight)
 
-            # Area of improvemnt 
+            # Area of improvement 
             if "Area of Improvement" in options:
                 st.subheader("Area of Improvement")
-                areaofimp = extract_area_of_improvment(transcript)
+                areaofimp = analyze_weekly_data()
                 for areaofimps in areaofimp:
                     st.write(areaofimps)
 
