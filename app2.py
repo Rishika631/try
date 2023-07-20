@@ -60,6 +60,22 @@ def extract_key_points(video_path):
 
     return key_frames, key_points
 
+# Function to extract Area of improment for each of the person from transcript 
+# def extract_area_of_improvment(transcript):
+#     prompt = "Extract Area of improment for each person from the following transcript( list down area of improvement in seperate line): \n\n" + transcript
+#     response = openai.Completion.create(
+#         engine="text-davinci-003",
+#         prompt=prompt,
+#         max_tokens=200,
+#         temperature=0.3,
+#         top_p=1.0,
+#         frequency_penalty=0.0,
+#         presence_penalty=0.0
+#     )
+#     areaofimp = response.choices[0].text.strip().split("\n")
+    
+#     return areaofimp
+
 # Function to extract action insights from transcript
 def extract_action_insights(transcript):
     # Placeholder logic - Extract sentences containing action-oriented keywords
