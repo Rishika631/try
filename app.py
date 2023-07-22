@@ -23,18 +23,14 @@ st.set_page_config(page_title="Team NeuronX : AI-Driven VidSummarizer")
 
 # Function to extract transcript from YouTube video
 def extract_transcript(youtube_video):
-    video_id = None
-    if "=" in youtube_video:
-        video_id = youtube_video.split("=")[1]
+    video_id = youtube_video.split("=")[1]
+    transcript = YouTubeTranscriptApi.get_transcript(video_id)
 
-    if video_id:
-        transcript = YouTubeTranscriptApi.get_transcript(video_id)
-        transcript_text = ""
-        for segment in transcript:
-            transcript_text += segment['text'] + " "
-        return transcript_text
-    else:
-        return "Invalid YouTube video URL. Please provide a valid URL."
+    transcript_text = ""
+    for segment in transcript:
+        transcript_text += segment['text'] + " "
+
+    return transcript_text
 
 
 
