@@ -40,7 +40,7 @@ def analyze_weekly_data():
                 data += f"Event Start Time: {start_date}\n"
                 data += f"Event Description: {description}\n"
 
-        prompt = f"Extract Area of improment for each person to perform better from the following event (list down area of improvement in seperate line):\n{data}\n"  
+        prompt = f"Extract Area of improment for each person with names to perform better from the following event (list down area of improvement in seperate line):\n{data}\n"  
         response = openai.Completion.create(
         engine="text-davinci-003",
         prompt=prompt,
