@@ -1,15 +1,15 @@
 streamlit==0.84.1
 transformers==4.11.3
+google-api-python-client 
+google-auth 
+google-auth-oauthlib 
+google-auth-httplib2
+oauth2client<4.0.0
 youtube_transcript_api==0.4.1
 moviepy==1.0.3
 torch==1.9.0
 openai
 python-dotenv
 spacy
-google-api-python-client 
-google-auth 
-google-auth-oauthlib 
-google-auth-httplib2
-oauth2client<4.0.0
 click==7.1.2
 
