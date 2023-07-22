@@ -7,14 +7,19 @@ import moviepy.editor as mp
 import os
 from transformers import pipeline
 from urllib.parse import urlparse, parse_qs
+from google_calendar_integration import send_calendar_notification
+from meeting_analyzer import analyze_weekly_data
 
-# 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 -new api key - kartik
+
+
+# Demo youtube video :- https://www.youtube.com/watch?v=sapH1OnmfQg&t=153s&ab_channel=EnglishTogether
+                      # https://www.youtube.com/watch?v=z-8o9sp8YIA&t=36s&ab_channel=LearnEnglishbyPocketPassport
 
 # Set OpenAI API credentials
-openai.api_key = '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' #Kartik-API KEYS
+openai.api_key = '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' # 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 changed API keys
 
 # Set Streamlit page configuration
-st.set_page_config(page_title="YouTube Video Summarizer and Insights")
+st.set_page_config(page_title="Team NeuronX : AI-Driven VidSummarizer")
 
 # Function to extract transcript from YouTube video
 def extract_transcript(youtube_video):
@@ -29,9 +34,9 @@ def extract_transcript(youtube_video):
 
 
 
-# Function to summarize transcript using OpenAI's text summarization model
+# Function to summarize transcript using OpenAI's text Meeting Summary model
 def summarize_transcript(transcript):
-    prompt = "Summarize the following transcript:\n\n" + transcript
+    prompt = "Extract summary from the following transcript in 100-120 words and key points also:\n\n" + transcript
     response = openai.Completion.create(
         engine="text-davinci-003",
         prompt=prompt,
@@ -41,58 +46,46 @@ def summarize_transcript(transcript):
         frequency_penalty=0.0,
         presence_penalty=0.0
     )
-    summary = response.choices[0].text.strip()
+    summary = response.choices[0].text.strip().split("\n")
+    # send_calendar_notification(summary)
     return summary
 
-# Function to extract key points from the video using moviepy
-def extract_key_points(video_path):
+
+# Function to extract Image Summary from the video using moviepy
+def extract_image_summary(video_path):
     clip = mp.VideoFileClip(video_path)
     duration = clip.duration
     key_frames = []
-    key_points = []
+    image_summary = []
 
     # Extract key frames at desired intervals
     for i in range(10):
         time = duration * i / 10
         frame = clip.get_frame(time)
         key_frames.append(frame)
-        key_points.append(f"Key Point {i+1}")
+        image_summary.append(f"Key Point {i+1}")
 
-    return key_frames, key_points
+    return key_frames, image_summary
 
-# Function to extract Area of improment for each of the person from transcript 
-# def extract_area_of_improvment(transcript):
-#     prompt = "Extract Area of improment for each person from the following transcript( list down area of improvement in seperate line): \n\n" + transcript
-#     response = openai.Completion.create(
-#         engine="text-davinci-003",
-#         prompt=prompt,
-#         max_tokens=200,
-#         temperature=0.3,
-#         top_p=1.0,
-#         frequency_penalty=0.0,
-#         presence_penalty=0.0
-#     )
-#     areaofimp = response.choices[0].text.strip().split("\n")
-    
-#     return areaofimp
-
-# Function to extract action insights from transcript
+# Function to extract action insights & Key Points from transcript 
 def extract_action_insights(transcript):
-    # Placeholder logic - Extract sentences containing action-oriented keywords
-    keywords = ["do", "perform", "execute", "implement", "take action"]
-    insights = []
-
-    # Split transcript into sentences
-    sentences = transcript.split(".")
-    
-    for sentence in sentences:
-        sentence = sentence.strip()
-        for keyword in keywords:
-            if keyword in sentence:
-                insights.append(sentence)
-                break
-    
+    prompt = "Extract action insights and key points both from the following transcript:\n\n" + transcript
+    response = openai.Completion.create(
+        engine="text-davinci-003",
+        prompt=prompt,
+        max_tokens=200,
+        temperature=0.3,
+        top_p=1.0,
+        frequency_penalty=0.0,
+        presence_penalty=0.0
+    )
+    insights = response.choices[0].text.strip().split("\n")
+    send_calendar_notification(insights)
     return insights
+
+
+
+# Function to analyze_sentiment
 
 def analyze_sentiment(transcript):
     sentiment_analyzer = pipeline("sentiment-analysis")
@@ -101,15 +94,21 @@ def analyze_sentiment(transcript):
     sentiments = [result["label"] for result in results]
     return sentiments
 
-def generate_minutes_of_meeting(transcript):
-    sentences = re.split(r'(?<=[.!?])\s+', transcript)  # Split transcript into sentences
+# Function to extract a given task 
 
-    minutes_of_meeting = "Minutes of Meeting\n\n"
-    for i, sentence in enumerate(sentences):
-        minutes_of_meeting += f"\t- {sentence}\n"
-
-    return minutes_of_meeting
-
+def extract_task_from_transcript(transcript, task):
+    prompt = f"{task} list down  all the taks given from the following transcript and mention to whome the task was given :\n\n{transcript}"
+    response = openai.Completion.create(
+        engine="text-davinci-003",
+        prompt=prompt,
+        max_tokens=200,
+        temperature=0.3,
+        top_p=1.0,
+        frequency_penalty=0.0,
+        presence_penalty=0.0
+    )
+    tasks = response.choices[0].text.strip().split("\n")
+    return tasks
 
 
 # Function to perform chatbot interaction
@@ -130,10 +129,12 @@ def chatbot_interaction(transcript, question):
         return answer
     else:
         return "I'm sorry, I don't have an answer for that question."
+    
+
 
 # Streamlit app
 def main():
-    st.header("YouTube Video Summarizer and Insights")
+    st.header("Team NeuronX : AI-Driven VidSummarizer")
 
     # Option to upload local file or enter YouTube video URL
     option = st.selectbox("Choose an option:", ["YouTube Video", "Local File"])
@@ -145,45 +146,56 @@ def main():
         if youtube_video:
             # Extract transcript from YouTube video
             transcript = extract_transcript(youtube_video)
+           
+            st.success("Meeting processed successfully!")
 
-            # Summarize transcript
-            summary = summarize_transcript(transcript)
-
-            st.info("Transcript processed successfully!")
+            # st.info("Meeting processed successfully!") 
 
             # Display options
-            options = st.sidebar.multiselect("Select Options:", ["Summarization", "Key Points", "Action Insights", "Sentiment Analysis", "Minutes of Meeting", "Chatbot"])
+            options = st.sidebar.multiselect("Select Options:", ["Meeting Summary", "Image Summary", "Action Insights & Key Points", "Area of Improvement", "Sentiment Analysis", "Given Task", "Chatbot"])
 
-            # Summarization
-            if "Summarization" in options:
-                st.subheader("Transcript Summary")
-                st.text(summary)
+            # Meeting Summary
+            if "Meeting Summary" in options:
+                st.subheader("Meeting Summary")
+                summary = summarize_transcript(transcript)
+                for summ in summary:
+                    st.write(summ)
 
-            # Key Points
-            if "Key Points" in options:
-                st.subheader("Key Points")
-                key_frames, key_points = extract_key_points(youtube_video)
+            # Image Summary
+            if "Image Summary" in options:
+                st.subheader("Image Summary")
+                key_frames, image_summary = extract_image_summary(youtube_video)
                 for idx, key_frame in enumerate(key_frames):
                     st.image(key_frame, caption=f"Key Frame {idx+1}")
-                    st.write(key_points[idx])
+                    st.write(image_summary[idx])
 
-            # Action Insights
-            if "Action Insights" in options:
-                st.subheader("Action Insights")
+            # Action Insights & Key Points
+            if "Action Insights & Key Points" in options:
+                st.subheader("Action Insights & Key Points of the meeting")
                 insights = extract_action_insights(transcript)
                 for insight in insights:
                     st.write(insight)
 
+            # Area of improvement 
+            if "Area of Improvement" in options:
+                st.subheader("Area of Improvement")
+                areaofimp = analyze_weekly_data()
+                for areaofimps in areaofimp:
+                    st.write(areaofimps)
+
+             #  Sentiment Analysis
             if "Sentiment Analysis" in options:
-                st.subheader("Sentiment Analysis")
+                st.subheader("Sentiment Analysis of the meeting")
                 sentiment_results = analyze_sentiment(transcript)
                 for idx, sentiment in enumerate(sentiment_results):
                     st.write(f"Sentiment {idx+1}: {sentiment}")
 
-            if "Minutes of Meeting" in options:
-                st.subheader("Minutes of Meeting")
-                mom = generate_minutes_of_meeting(transcript)
-                st.text(mom)
+            # Given Task
+            if "Given Task" in options:
+                st.subheader("Task given in the meeting")
+                tasks = extract_task_from_transcript(transcript, "Extract task")
+                for task in tasks:
+                    st.write(task)
             
             # Chatbot
             if "Chatbot" in options:
@@ -204,35 +216,43 @@ def main():
                 f.write(uploaded_file.getbuffer())
 
             # Extract transcript from video
-            transcript = ""  # Placeholder, replace with your logic to extract transcript from the local video
+            transcript = ""  # Placeholder, have to use logic to extract transcript from the local video
 
-            # Summarize transcript
-            summary = summarize_transcript(transcript)
 
-            st.info("Transcript processed successfully!")
+            # st.info("Meeting processed successfully!")
+            st.success("Meeting processed successfully!")
 
             # Display options
-            options = st.sidebar.multiselect("Select Options:", ["Summarization", "Key Points", "Action Insights", "Chatbot"])
+            options = st.sidebar.multiselect("Select Options:", ["Meeting Summary", "Image Summary", "Action Insights & Key Points", "Area of Improvement", "Sentiment Analysis", "Given Task", "Chatbot"])
 
-            # Summarization
-            if "Summarization" in options:
-                st.subheader("Transcript Summary")
-                st.text(summary)
+             # Meeting Summary
+            if "Meeting Summary" in options:
+                st.subheader("Meeting Summary")
+                summary = summarize_transcript(transcript)
+                for summ in summary:
+                    st.write(summ)
 
-            # Key Points
-            if "Key Points" in options:
-                st.subheader("Key Points")
-                key_frames, key_points = extract_key_points(video_path)
+            # Image Summary
+            if "Image Summary" in options:
+                st.subheader("Image Summary")
+                key_frames, image_summary = extract_image_summary(video_path)
                 for idx, key_frame in enumerate(key_frames):
                     st.image(key_frame, caption=f"Key Frame {idx+1}")
-                    st.write(key_points[idx])
+                    st.write(image_summary[idx])
 
-            # Action Insights
-            if "Action Insights" in options:
-                st.subheader("Action Insights")
+            # Action Insights & Key Points
+            if "Action Insights & Key Points" in options:
+                st.subheader("Action Insights & Key Points of the meeting")
                 insights = extract_action_insights(transcript)
                 for insight in insights:
                     st.write(insight)
+
+            # Area of improvement 
+            if "Area of Improvement" in options:
+                st.subheader("Area of Improvement")
+                areaofimp = analyze_weekly_data()
+                for areaofimps in areaofimp:
+                    st.write(areaofimps)
 
             # Chatbot
             if "Chatbot" in options:
@@ -242,16 +262,20 @@ def main():
                     response = chatbot_interaction(transcript, user_question)
                     st.write(response)
 
+           #  Sentiment Analysis
             if "Sentiment Analysis" in options:
-                st.subheader("Sentiment Analysis")
+                st.subheader("Sentiment Analysis of the meeting")
                 sentiment_results = analyze_sentiment(transcript)
                 for idx, sentiment in enumerate(sentiment_results):
                     st.write(f"Sentiment {idx+1}: {sentiment}")
 
-            if "Minutes of Meeting" in options:
-                st.subheader("Minutes of Meeting")
-                mom = generate_minutes_of_meeting(transcript)
-                st.text(mom)
+           # Given Task
+            if "Given Task" in options:
+                st.subheader("Task given in the meeting")
+                tasks = extract_task_from_transcript(transcript, "Extract task")
+                for task in tasks:
+                    st.write(task)
+         
 
             # Delete the uploaded video file
             os.remove(video_path)
