@@ -139,7 +139,7 @@ def chatbot_interaction(transcript, question):
 
 # Streamlit app
 def main():
-    st.header("Team NeuronX : AI-Driven VidSummarizer")
+    st.header("Team NeuronX : AI-Driven SynchroMeet")
 
     # Option to upload local file or enter YouTube video URL
     option = st.selectbox("Choose an option:", ["YouTube Video", "Local File"])
