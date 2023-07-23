@@ -19,7 +19,7 @@ from meeting_analyzer import analyze_weekly_data
 openai.api_key = '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' # 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 changed API keys
 
 # Set Streamlit page configuration
-st.set_page_config(page_title="Team NeuronX : AI-Driven VidSummarizer")
+st.set_page_config(page_title="Team NeuronX : AI-Driven SynchroMeet")
 
 # Function to extract transcript from YouTube video
 def extract_transcript(youtube_video):
