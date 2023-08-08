@@ -16,7 +16,7 @@ from meeting_analyzer import analyze_weekly_data
                       # https://www.youtube.com/watch?v=z-8o9sp8YIA&t=36s&ab_channel=LearnEnglishbyPocketPassport
 
 # Set OpenAI API credentials
-openai.api_key = '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' # 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 changed API keys
+openai.api_key = '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' # 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 changed API keys
 
 # Set Streamlit page configuration
 st.set_page_config(page_title="Team NeuronX : AI-Driven SynchroMeet")
